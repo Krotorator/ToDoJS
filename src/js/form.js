@@ -78,8 +78,8 @@ function renderDoneTask(obj) {
     doneTask.innerHTML = html;
     doneBody.append(doneTask);
     const doneCounter = document.querySelector("#doneCounter");
-
     doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
+    doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
 }
 
 function getNowDate() {

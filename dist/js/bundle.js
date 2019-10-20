@@ -7907,25 +7907,31 @@ var toDos = document.querySelector("#toDos");
 var chekboxes = document.querySelectorAll(".todos__item-checkbox");
 var plus = document.querySelector("#plus");
 var overlay = document.querySelector("#overlay");
+var doneSignal = document.querySelector("#doneSignal");
 select.addEventListener("click", function (e) {});
 plus.addEventListener("click", function (e) {
   addForm.setAttribute("style", "display:flex");
   overlay.classList.add("overlay--active");
 });
 toDos.addEventListener("click", function (e) {
-  console.log(e.target.tagName);
+  console.log(e.target);
 
   if (e.target.tagName == "INPUT" && e.target.checked) {
     taskDisapearAfterCheck(e.target);
     deleteTaskFromStorage(e.target);
+    doneSignal.classList.add("signal-animate");
+    setTimeout(function () {
+      doneSignal.classList.remove("signal-animate");
+    }, 800);
   } else if (e.target.getAttribute("id") == "doneDelete") {
     isDoneDisapearOnCloseBtn(e.target);
     deleteIsDoneFromStorage(e.target.nextElementSibling);
   } else if (e.target.classList.contains("doneDelete")) {
     isDoneDisapearOnCloseBtn(e.target.parentElement);
-  } else if (e.target.tagName == "path") {
-    console.log(e.target.parentElement.parentElement);
+    deleteIsDoneFromStorage(e.target.parentElement.nextElementSibling);
+  } else if (e.target.getAttribute("id") == "doneDeletePath") {
     isDoneDisapearOnCloseBtn(e.target.parentElement.parentElement.parentElement);
+    deleteIsDoneFromStorage(e.target.parentElement.parentElement.parentElement.nextElementSibling);
   }
 });
 
@@ -7945,14 +7951,12 @@ function taskDisapearAfterCheck(element) {
 
 function isDoneDisapearOnCloseBtn(element) {
   var parrentItem = element.parentElement.parentElement;
-  setTimeout(function () {
-    parrentItem.classList.add("todos__item--hide");
-  }, 500);
+  parrentItem.classList.add("todos__item--hide");
   setTimeout(function () {
     parrentItem.remove();
-    parrentItem.classList.remove("todos__item--hide");
     var doneCounter = document.querySelector("#doneCounter");
     doneCounter.innerText = parseInt(doneCounter.innerText) - 1;
+    doneSignal.innerText = parseInt(doneSignal.innerText) - 1;
   }, 1000);
 }
 
@@ -7973,11 +7977,12 @@ function deleteTaskFromStorage(checkbox) {
 
 function deleteIsDoneFromStorage(label) {
   var existTasks = JSON.parse(localStorage.getItem((0, _form.getNowDate)()));
-  var deletedIsDone;
+  var deletedDone;
 
   for (var i = 0; i < existTasks.isDone.length; i++) {
     if (existTasks.isDone[i].idFor == label.getAttribute("for")) {
-      deletedIsDone = existTasks.isDone.splice(i, 1);
+      deletedDone = existTasks.isDone.splice(i, 1);
+      console.log(existTasks.isDone);
     }
   }
 
@@ -8118,6 +8123,7 @@ function renderDoneTask(obj) {
   doneBody.append(doneTask);
   var doneCounter = document.querySelector("#doneCounter");
   doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
+  doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
 }
 
 function getNowDate() {
@@ -8162,6 +8168,8 @@ window.onload = function () {
   var toDoLink = document.querySelector(".link__todo");
   var doneLink = document.querySelector(".link__done");
   var toDoBody = document.querySelector("#todos_body");
+  var allDoneDeletBtns = document.querySelectorAll("#doneDelete");
+  console.log(allDoneDeletBtns);
   toDoLink.addEventListener("click", function () {
     doneBody.classList.add("hide");
     doneLink.classList.remove("link--active");

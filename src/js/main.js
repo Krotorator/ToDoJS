@@ -8,6 +8,9 @@ window.onload = function() {
     const doneLink = document.querySelector(".link__done");
     const toDoBody = document.querySelector("#todos_body");
 
+    let allDoneDeletBtns = document.querySelectorAll("#doneDelete");
+    console.log(allDoneDeletBtns);
+
     toDoLink.addEventListener("click", () => {
         doneBody.classList.add("hide");
         doneLink.classList.remove("link--active");
