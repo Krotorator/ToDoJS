@@ -17,7 +17,10 @@
             <div class="todos__header">
                 <div class="links">
                     <a href="#" class="link link__todo link--active">ToDo</a>
-                    <a href="#" class="link link__done">Done</a>
+                    <a href="#" class="link link__done"
+                        >Done
+                        <div class="link__done-signal" id="doneSignal">0</div>
+                    </a>
                 </div>
             </div>
             <div class="todos_body" id="todos_body">
@@ -84,8 +87,8 @@
             <div class="todos__item-wrap">
                 <a href="#" id="doneDelete" class="button button__add form__close done__delete">
                 <svg class="button__add-icon doneDelete" viewBox="0 0 357 357">
-                    <g id="add">
-                        <path d="M357,204H204v153h-51V204H0v-51h153V0h51v153h153V204z" />
+                    <g id="done">
+                        <path id="doneDeletePath" d="M357,204H204v153h-51V204H0v-51h153V0h51v153h153V204z" />
                     </g>
                 </svg>
             </a>
