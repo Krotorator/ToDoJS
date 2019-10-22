@@ -29,6 +29,7 @@
                         <span class="count__text">Things to do</span>
                         <span class="count__number" id="taskCounter">0</span>
                     </div>
+                    <div class="todos__container" id="tasksContainer"></div>
                 </div>
             </div>
             <!-- DONE CONTAINER STARTS -->
@@ -78,7 +79,7 @@
                     name="check"
                     id={{check}}
                 />
-                <label class="todos__item-label" for={{check}}>{{taskText}}</label>
+                <label class="todos__item-label" title={{title}} for={{check}}>{{taskText}}</label>
                 <span class="todos__item-time">{{taskTime}}</span>
             </div>
         </script>
@@ -92,7 +93,7 @@
                     </g>
                 </svg>
             </a>
-                <label class="todos__item-label" for={{check}}>{{taskText}}</label>
+                <label class="todos__item-label" title={{title}} for={{check}}>{{taskText}}</label>
                 <span class="todos__item-time">{{taskTime}}</span>
             </div>
         </script>

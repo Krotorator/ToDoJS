@@ -7908,7 +7908,6 @@ var chekboxes = document.querySelectorAll(".todos__item-checkbox");
 var plus = document.querySelector("#plus");
 var overlay = document.querySelector("#overlay");
 var doneSignal = document.querySelector("#doneSignal");
-select.addEventListener("click", function (e) {});
 plus.addEventListener("click", function (e) {
   addForm.setAttribute("style", "display:flex");
   overlay.classList.add("overlay--active");
@@ -8022,6 +8021,10 @@ exports.getNowDate = getNowDate;
 exports.renderDoneTask = renderDoneTask;
 exports.renderNewTask = renderNewTask;
 
+var _main = _interopRequireDefault(require("./main"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -8037,35 +8040,60 @@ var select = document.querySelector("#select");
 var taskInput = document.querySelector("#task");
 var addTask = document.querySelector("#addTask");
 var tasksList = document.querySelector("#todos__items");
+var tasksContainer = document.querySelector("#tasksContainer");
 var formCloseButton = document.querySelector("#close");
 createAndAppendOption(select);
 var allTasks = {
   isDone: []
 };
+var taskTime;
+
+select.onchange = function (e) {
+  this.setAttribute("selected", "selected");
+};
+
 addTask.addEventListener("click", function () {
-  var taskTime;
+  if (taskInput.value != "") {
+    var idFor;
+    var forIdFor = JSON.parse(localStorage.getItem(getNowDate()));
 
-  for (var _i = 0, _arr = _toConsumableArray(select.children); _i < _arr.length; _i++) {
-    var option = _arr[_i];
-
-    if (option.hasAttribute("selected")) {
-      taskTime = option.value;
+    if (forIdFor) {
+      idFor = "check".concat(forIdFor.toDo.length);
+    } else {
+      idFor = "check0";
     }
-  }
 
-  var idFor = "check".concat(tasksList.children.length);
-  var taskObj = {
-    taskText: taskInput.value,
-    taskTime: taskTime,
-    idFor: idFor
-  };
-  allTasks.toDo = [];
-  allTasks.toDo.push(taskObj);
-  renderNewTask(taskObj);
-  taskInput.value = "";
-  closeForm();
-  setAllTasksToLocalStorage(getNowDate(), allTasks);
-  console.log(allTasks);
+    var taskObj = {
+      taskText: taskInput.value,
+      taskTime: select.value,
+      title: taskInput.value,
+      idFor: idFor
+    };
+    allTasks.toDo = [];
+    allTasks.toDo.push(taskObj);
+    console.log(taskObj);
+
+    _toConsumableArray(tasksContainer.children).forEach(function (child) {
+      child.remove();
+    });
+
+    setAllTasksToLocalStorage(getNowDate(), allTasks);
+    var AllExistTasks = JSON.parse(localStorage.getItem(getNowDate()));
+    (0, _main.default)(AllExistTasks);
+
+    if (AllExistTasks && AllExistTasks.toDo) {
+      var taskCounter = document.querySelector("#taskCounter");
+      taskCounter.innerText = parseInt(AllExistTasks.toDo.length);
+    }
+
+    taskInput.value = "";
+    closeForm();
+  } else {
+    taskInput.classList.add("input-alert");
+    setTimeout(function () {
+      taskInput.classList.remove("input-alert");
+    }, 1500);
+  }
 });
 formCloseButton.addEventListener("click", function () {
   closeForm();
@@ -8095,16 +8123,16 @@ function renderNewTask(obj) {
   var context = {
     taskText: obj.taskText,
     taskTime: obj.taskTime,
-    check: obj.idFor
+    check: obj.idFor,
+    title: obj.title
   };
   var html = template(context);
   var newTask = document.createElement("div");
   newTask.classList.add("todos__item");
   newTask.setAttribute("id", "toDoItem");
+  newTask.dataset.time = obj.taskTime;
   newTask.innerHTML = html;
-  tasksList.append(newTask);
-  var taskCounter = document.querySelector("#taskCounter");
-  taskCounter.innerText = parseInt(taskCounter.innerText) + 1;
+  tasksContainer.append(newTask);
 }
 
 function renderDoneTask(obj) {
@@ -8113,14 +8141,16 @@ function renderDoneTask(obj) {
   var context = {
     taskText: obj.taskText,
     taskTime: obj.taskTime,
-    check: obj.idFor
+    check: obj.idFor,
+    title: obj.title
   };
   var html = template(context);
   var doneTask = document.createElement("div");
   doneTask.classList.add("todos__item");
   doneTask.setAttribute("id", "toDoItem");
+  doneTask.dataset.done = "true";
   doneTask.innerHTML = html;
-  doneBody.append(doneTask);
+  doneBody.firstElementChild.append(doneTask);
   var doneCounter = document.querySelector("#doneCounter");
   doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
   doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
@@ -8153,10 +8183,32 @@ function closeForm() {
   overlay.classList.remove("overlay--active");
 }
 
-},{"handlebars":31}],46:[function(require,module,exports){
+},{"./main":46,"handlebars":31}],46:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = renderAllExistTasks;
+
 var _form = require("./form");
+
+function renderAllExistTasks(arr) {
+  if (arr && arr.toDo) {
+    if (Array.isArray(arr.toDo)) {
+      arr.toDo.sort(function (a, b) {
+        return parseInt(a.taskTime.substr(0, 2)) - parseInt(b.taskTime.substr(0, 2));
+      });
+      arr.toDo.forEach(function (taskObj) {
+        (0, _form.renderNewTask)(taskObj);
+        var taskCounter = document.querySelector("#taskCounter");
+        taskCounter.innerText = parseInt(arr.toDo.length);
+      });
+    } else {
+      (0, _form.renderNewTask)(arr.toDo);
+    }
+  }
+}
 
 require("./_scripts");
 
@@ -8191,18 +8243,6 @@ window.onload = function () {
   function getAllTasksFromLocalStorage(key) {
     var existTasks = JSON.parse(localStorage.getItem(key));
     return existTasks;
-  }
-
-  function renderAllExistTasks(arr) {
-    if (arr && arr.toDo) {
-      if (Array.isArray(arr.toDo)) {
-        arr.toDo.forEach(function (taskObj) {
-          (0, _form.renderNewTask)(taskObj);
-        });
-      } else {
-        (0, _form.renderNewTask)(arr.toDo);
-      }
-    }
   }
 
   function renderAllDoneTasks(arr) {

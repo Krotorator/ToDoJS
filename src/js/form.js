@@ -1,3 +1,5 @@
+import renderAllExistTasks from "./main";
+
 const Handlebars = require("handlebars");
 
 const addForm = document.querySelector("#addForm");
@@ -5,32 +7,58 @@ const select = document.querySelector("#select");
 const taskInput = document.querySelector("#task");
 const addTask = document.querySelector("#addTask");
 const tasksList = document.querySelector("#todos__items");
+const tasksContainer = document.querySelector("#tasksContainer");
 const formCloseButton = document.querySelector("#close");
 
 createAndAppendOption(select);
 let allTasks = {
     isDone: []
 };
+
+let taskTime;
+
+select.onchange = function(e) {
+    this.setAttribute("selected", "selected");
+};
+
 addTask.addEventListener("click", function() {
-    let taskTime;
-    for (const option of [...select.children]) {
-        if (option.hasAttribute("selected")) {
-            taskTime = option.value;
+    if (taskInput.value != "") {
+        let idFor;
+        let forIdFor = JSON.parse(localStorage.getItem(getNowDate()));
+        if (forIdFor) {
+            idFor = `check${forIdFor.toDo.length}`;
+        } else {
+            idFor = "check0";
         }
+        let taskObj = {
+            taskText: taskInput.value,
+            taskTime: select.value,
+            title: taskInput.value,
+            idFor: idFor
+        };
+        allTasks.toDo = [];
+        allTasks.toDo.push(taskObj);
+        console.log(taskObj);
+
+        [...tasksContainer.children].forEach(child => {
+            child.remove();
+        });
+        setAllTasksToLocalStorage(getNowDate(), allTasks);
+        let AllExistTasks = JSON.parse(localStorage.getItem(getNowDate()));
+        renderAllExistTasks(AllExistTasks);
+        if (AllExistTasks && AllExistTasks.toDo) {
+            const taskCounter = document.querySelector("#taskCounter");
+            taskCounter.innerText = parseInt(AllExistTasks.toDo.length);
+        }
+
+        taskInput.value = "";
+        closeForm();
+    } else {
+        taskInput.classList.add("input-alert");
+        setTimeout(() => {
+            taskInput.classList.remove("input-alert");
+        }, 1500);
     }
-    let idFor = `check${tasksList.children.length}`;
-    let taskObj = {
-        taskText: taskInput.value,
-        taskTime: taskTime,
-        idFor: idFor
-    };
-    allTasks.toDo = [];
-    allTasks.toDo.push(taskObj);
-    renderNewTask(taskObj);
-    taskInput.value = "";
-    closeForm();
-    setAllTasksToLocalStorage(getNowDate(), allTasks);
-    console.log(allTasks);
 });
 
 formCloseButton.addEventListener("click", function() {
@@ -56,27 +84,37 @@ function createAndAppendOption(whereToAppend) {
 function renderNewTask(obj) {
     const source = document.getElementById("taskTemplate").innerHTML;
     const template = Handlebars.compile(source);
-    const context = { taskText: obj.taskText, taskTime: obj.taskTime, check: obj.idFor };
+    const context = {
+        taskText: obj.taskText,
+        taskTime: obj.taskTime,
+        check: obj.idFor,
+        title: obj.title
+    };
     const html = template(context);
     let newTask = document.createElement("div");
     newTask.classList.add("todos__item");
     newTask.setAttribute("id", "toDoItem");
+    newTask.dataset.time = obj.taskTime;
     newTask.innerHTML = html;
-    tasksList.append(newTask);
-    const taskCounter = document.querySelector("#taskCounter");
-    taskCounter.innerText = parseInt(taskCounter.innerText) + 1;
+    tasksContainer.append(newTask);
 }
 
 function renderDoneTask(obj) {
     const source = document.getElementById("doneTemplate").innerHTML;
     const template = Handlebars.compile(source);
-    const context = { taskText: obj.taskText, taskTime: obj.taskTime, check: obj.idFor };
+    const context = {
+        taskText: obj.taskText,
+        taskTime: obj.taskTime,
+        check: obj.idFor,
+        title: obj.title
+    };
     const html = template(context);
     let doneTask = document.createElement("div");
     doneTask.classList.add("todos__item");
     doneTask.setAttribute("id", "toDoItem");
+    doneTask.dataset.done = "true";
     doneTask.innerHTML = html;
-    doneBody.append(doneTask);
+    doneBody.firstElementChild.append(doneTask);
     const doneCounter = document.querySelector("#doneCounter");
     doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
     doneSignal.innerText = parseInt(doneSignal.innerText) + 1;

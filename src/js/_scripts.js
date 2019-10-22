@@ -6,8 +6,6 @@ const plus = document.querySelector("#plus");
 const overlay = document.querySelector("#overlay");
 const doneSignal = document.querySelector("#doneSignal");
 
-select.addEventListener("click", function(e) {});
-
 plus.addEventListener("click", function(e) {
     addForm.setAttribute("style", "display:flex");
     overlay.classList.add("overlay--active");
