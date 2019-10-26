@@ -1,4 +1,6 @@
 import { getNowDate, renderNewTask, renderDoneTask } from "./form";
+export { renderAllDoneTasks, renderAllExistTasks };
+
 export default function renderAllExistTasks(arr) {
     if (arr && arr.toDo) {
         if (Array.isArray(arr.toDo)) {
@@ -19,46 +21,46 @@ export default function renderAllExistTasks(arr) {
 require("./_scripts");
 require("./form");
 require("./done");
+require("./calendar");
 
-window.onload = function() {
-    const toDoLink = document.querySelector(".link__todo");
-    const doneLink = document.querySelector(".link__done");
-    const toDoBody = document.querySelector("#todos_body");
+// window.onload = function() {
+const toDoLink = document.querySelector(".link__todo");
+const doneLink = document.querySelector(".link__done");
+const toDoBody = document.querySelector("#todos_body");
 
-    let allDoneDeletBtns = document.querySelectorAll("#doneDelete");
-    console.log(allDoneDeletBtns);
+let allDoneDeletBtns = document.querySelectorAll("#doneDelete");
 
-    toDoLink.addEventListener("click", () => {
-        doneBody.classList.add("hide");
-        doneLink.classList.remove("link--active");
-        toDoBody.classList.remove("hide");
-        toDoLink.classList.add("link--active");
-    });
-    doneLink.onclick = () => {
-        toDoBody.classList.add("hide");
-        toDoLink.classList.remove("link--active");
-        doneBody.classList.remove("hide");
-        doneLink.classList.add("link--active");
-    };
+toDoLink.addEventListener("click", () => {
+    doneBody.classList.add("hide");
+    doneLink.classList.remove("link--active");
+    toDoBody.classList.remove("hide");
+    toDoLink.classList.add("link--active");
+});
+doneLink.onclick = () => {
+    toDoBody.classList.add("hide");
+    toDoLink.classList.remove("link--active");
+    doneBody.classList.remove("hide");
+    doneLink.classList.add("link--active");
+};
 
-    let allTasksArray = getAllTasksFromLocalStorage(getNowDate(getNowDate()));
-    renderAllExistTasks(allTasksArray);
-    renderAllDoneTasks(allTasksArray);
+let allTasksArray = getAllTasksFromLocalStorage(getNowDate(getNowDate()));
+// renderAllExistTasks(allTasksArray);
+// renderAllDoneTasks(allTasksArray);
 
-    function getAllTasksFromLocalStorage(key) {
-        let existTasks = JSON.parse(localStorage.getItem(key));
-        return existTasks;
-    }
+function getAllTasksFromLocalStorage(key) {
+    let existTasks = JSON.parse(localStorage.getItem(key));
+    return existTasks;
+}
 
-    function renderAllDoneTasks(arr) {
-        if (arr && arr.isDone) {
-            if (Array.isArray(arr.isDone)) {
-                arr.isDone.forEach(taskObj => {
-                    renderDoneTask(taskObj);
-                });
-            } else {
-                renderDoneTask(arr.isDone);
-            }
+function renderAllDoneTasks(arr) {
+    if (arr && arr.isDone) {
+        if (Array.isArray(arr.isDone)) {
+            arr.isDone.forEach(taskObj => {
+                renderDoneTask(taskObj);
+            });
+        } else {
+            renderDoneTask(arr.isDone);
         }
     }
-};
+}
+// };

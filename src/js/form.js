@@ -1,4 +1,4 @@
-import renderAllExistTasks from "./main";
+import { renderAllExistTasks, renderAllDoneTasks } from "./main";
 
 const Handlebars = require("handlebars");
 
@@ -8,6 +8,8 @@ const taskInput = document.querySelector("#task");
 const addTask = document.querySelector("#addTask");
 const tasksList = document.querySelector("#todos__items");
 const tasksContainer = document.querySelector("#tasksContainer");
+const doneContainer = document.querySelector("#doneContainer");
+
 const formCloseButton = document.querySelector("#close");
 
 createAndAppendOption(select);
@@ -23,8 +25,16 @@ select.onchange = function(e) {
 
 addTask.addEventListener("click", function() {
     if (taskInput.value != "") {
+        const calendarItems = [...document.querySelectorAll("#calendarItem")];
+        let activeDate;
+        calendarItems.forEach(item => {
+            if (item.classList.contains("calendar__item-active")) {
+                activeDate = item.dataset.date;
+            }
+        });
+
         let idFor;
-        let forIdFor = JSON.parse(localStorage.getItem(getNowDate()));
+        let forIdFor = JSON.parse(localStorage.getItem(activeDate));
         if (forIdFor) {
             idFor = `check${forIdFor.toDo.length}`;
         } else {
@@ -38,13 +48,13 @@ addTask.addEventListener("click", function() {
         };
         allTasks.toDo = [];
         allTasks.toDo.push(taskObj);
-        console.log(taskObj);
 
         [...tasksContainer.children].forEach(child => {
             child.remove();
         });
-        setAllTasksToLocalStorage(getNowDate(), allTasks);
-        let AllExistTasks = JSON.parse(localStorage.getItem(getNowDate()));
+
+        setAllTasksToLocalStorage(activeDate, allTasks);
+        let AllExistTasks = JSON.parse(localStorage.getItem(activeDate));
         renderAllExistTasks(AllExistTasks);
         if (AllExistTasks && AllExistTasks.toDo) {
             const taskCounter = document.querySelector("#taskCounter");
@@ -114,7 +124,7 @@ function renderDoneTask(obj) {
     doneTask.setAttribute("id", "toDoItem");
     doneTask.dataset.done = "true";
     doneTask.innerHTML = html;
-    doneBody.firstElementChild.append(doneTask);
+    doneContainer.append(doneTask);
     const doneCounter = document.querySelector("#doneCounter");
     doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
     doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
@@ -130,7 +140,9 @@ function getNowDate() {
 }
 
 function setAllTasksToLocalStorage(key, valueArray) {
-    let existTasks = JSON.parse(localStorage.getItem(getNowDate()));
+    let existTasks = JSON.parse(localStorage.getItem(key));
+    console.log(existTasks);
+
     if (existTasks && existTasks.toDo) {
         valueArray.toDo.forEach(element => {
             existTasks.toDo.push(element);
@@ -145,5 +157,7 @@ function closeForm() {
     addForm.setAttribute("style", "display:none");
     overlay.classList.remove("overlay--active");
 }
+
+// console.log(getNowDate());
 
 export { getNowDate, renderDoneTask, renderNewTask };

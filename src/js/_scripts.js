@@ -1,4 +1,5 @@
 import { getNowDate, renderDoneTask } from "./form";
+
 require("./form");
 const toDos = document.querySelector("#toDos");
 let chekboxes = document.querySelectorAll(".todos__item-checkbox");
@@ -12,9 +13,9 @@ plus.addEventListener("click", function(e) {
 });
 
 toDos.addEventListener("click", function(e) {
-    console.log(e.target);
-
     if (e.target.tagName == "INPUT" && e.target.checked) {
+        console.log(e.target);
+
         taskDisapearAfterCheck(e.target);
         deleteTaskFromStorage(e.target);
         doneSignal.classList.add("signal-animate");
@@ -61,7 +62,14 @@ function isDoneDisapearOnCloseBtn(element) {
 }
 
 function deleteTaskFromStorage(checkbox) {
-    let existTasks = JSON.parse(localStorage.getItem(getNowDate()));
+    let activeDate;
+    const calendarItems = [...document.querySelectorAll("#calendarItem")];
+    calendarItems.forEach(item => {
+        if (item.classList.contains("calendar__item-active")) {
+            activeDate = item.dataset.date;
+        }
+    });
+    let existTasks = JSON.parse(localStorage.getItem(activeDate));
     let deletedTask;
     for (let i = 0; i < existTasks.toDo.length; i++) {
         if (existTasks.toDo[i].idFor == checkbox.id) {
@@ -71,7 +79,7 @@ function deleteTaskFromStorage(checkbox) {
             renderDoneTask(deletedTask[0]);
         }
     }
-    localStorage.setItem(getNowDate(), JSON.stringify(existTasks));
+    localStorage.setItem(activeDate, JSON.stringify(existTasks));
 }
 
 function deleteIsDoneFromStorage(label) {
@@ -80,7 +88,7 @@ function deleteIsDoneFromStorage(label) {
     for (let i = 0; i < existTasks.isDone.length; i++) {
         if (existTasks.isDone[i].idFor == label.getAttribute("for")) {
             deletedDone = existTasks.isDone.splice(i, 1);
-            console.log(existTasks.isDone);
+            // console.log(existTasks.isDone);
         }
     }
     localStorage.setItem(getNowDate(), JSON.stringify(existTasks));
