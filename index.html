@@ -1,77 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Document</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="keywords" content="" />
-        <link rel="stylesheet" href="css/styles.min.css" />
-        <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"> -->
-        <link rel="shotcut icon" href="favicon.ico" />
-        <meta name="description" content="" />
-    </head>
-    <body>
-        <div class="overlay" id="overlay"></div>
-        <div class="todos" id="toDos">
-            <div class="todos__header">
-                <div class="links">
-                    <a href="#" class="link link__todo link--active">ToDo</a>
-                    <a href="#" class="link link__done"
-                        >Done
-                        <div class="link__done-signal" id="doneSignal">0</div>
-                    </a>
-                </div>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="css/styles.min.css" />
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"> -->
+    <link rel="shotcut icon" href="favicon.ico" />
+    <meta name="description" content="" />
+</head>
+
+<body>
+    <div class="overlay" id="overlay"></div>
+    <div class="todos" id="toDos">
+        <div class="todos__header">
+            <div class="links">
+                <a href="#" class="link link__todo link--active">ToDo</a>
+                <a href="#" class="link link__done">Done
+                    <div class="link__done-signal" id="doneSignal">0</div>
+                </a>
             </div>
-            <div class="todos_body" id="todos_body">
-                <div class="todos__items" id="todos__items">
-                    <div class="todos__item count">
-                        <span class="count__text">Things to do</span>
-                        <span class="count__number" id="taskCounter">0</span>
-                    </div>
-                    <div class="todos__container" id="tasksContainer"></div>
+        </div>
+        <div class="todos_body" id="todos_body">
+            <div class="todos__items" id="todos__items">
+                <div class="todos__item count">
+                    <span class="count__text">Things to do</span>
+                    <span class="count__number" id="taskCounter">0</span>
                 </div>
+                <div class="todos__container" id="tasksContainer"></div>
             </div>
-            <!-- DONE CONTAINER STARTS -->
-            <div class="todos_body done hide" id="doneBody">
-                <div class="todos__items done__items">
-                    <div class="todos__item done__item count">
-                        <span class="count__text">Things are done</span>
-                        <span class="count__number" id="doneCounter">0</span>
-                    </div>
+        </div>
+        <!-- DONE CONTAINER STARTS -->
+        <div class="todos_body done hide" id="doneBody">
+            <div class="todos__items done__items">
+                <div class="todos__item done__item count">
+                    <span class="count__text">Things are done</span>
+                    <span class="count__number" id="doneCounter">0</span>
                 </div>
+                <div class="todos__container done__container" id="doneContainer"></div>
+
             </div>
-            <!-- DONE SECTION ENDS -->
-            <div class="todos__footer">
-                <a href="#" id="plus" class="button button__add">
-                    <svg class="button__add-icon" viewBox="0 0 357 357">
-                        <g id="add">
-                            <path d="M357,204H204v153h-51V204H0v-51h153V0h51v153h153V204z" />
+        </div>
+        <!-- DONE SECTION ENDS -->
+
+        <!-- FOOTER STARTS -->
+        <div class="todos__footer">
+            <div class="calendar">
+                <a href="#" id="prev" class="calendar__arrow calendar__arrow_prev">
+                    <svg width="30px" height="30px" viewBox="0 0 451.847 451.847">
+                        <g>
+                            <path
+                                d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0
+                            c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744
+                            c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z" />
+                        </g>
+                    </svg>
+                </a>
+                <div class="calendar__items" id="calendarContainer">
+                </div>
+                <a href="#" id="next" class="calendar__arrow calendar__arrow_next">
+                    <svg width="30px" height="30px" viewBox="0 0 451.846 451.847">
+                        <g>
+                            <path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744
+                    		L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284
+                    		c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z" />
                         </g>
                     </svg>
                 </a>
             </div>
-        </div>
-
-        <!-- ADD TASK FORM STARTS -->
-        <div class="form" id="addForm" style="display:none">
-            <a href="#" id="close" class="button button__add form__close">
+            <a href="#" id="plus" class="button button__add button__add--big">
                 <svg class="button__add-icon" viewBox="0 0 357 357">
                     <g id="add">
                         <path d="M357,204H204v153h-51V204H0v-51h153V0h51v153h153V204z" />
                     </g>
                 </svg>
             </a>
-            <label for="task">Type task here</label>
-            <input class="form__task" type="text" name="task" id="task" />
-            <label for="time">When it should be done?</label>
-            <select class="form__time" name="time" id="select"> </select>
-            <button class="button form__button" id="addTask" type="submit">Add</button>
         </div>
-        <!-- ADD TASK FORM ENDS -->
+    </div>
+    <!-- FOOTER STARTS -->
 
-        <!-- HADLEBARS TEMPLATES STARTS -->
-        <script id="taskTemplate" type="text/x-handlebars-template">
+    <!-- ADD TASK FORM STARTS -->
+    <div class="form" id="addForm" style="display:none">
+        <a href="#" id="close" class="button button__add form__close">
+            <svg class="button__add-icon" viewBox="0 0 357 357">
+                <g id="add">
+                    <path d="M357,204H204v153h-51V204H0v-51h153V0h51v153h153V204z" />
+                </g>
+            </svg>
+        </a>
+        <label for="task">Type task here</label>
+        <input class="form__task" type="text" name="task" id="task" />
+        <label for="time">When it should be done?</label>
+        <select class="form__time" name="time" id="select"> </select>
+        <button class="button form__button" id="addTask" type="submit">Add</button>
+    </div>
+    <!-- ADD TASK FORM ENDS -->
+
+    <!-- HADLEBARS TEMPLATES STARTS -->
+    <script id="taskTemplate" type="text/x-handlebars-template">
             <div class="todos__item-wrap">
                 <input
                     class="todos__item-checkbox"
@@ -84,7 +113,7 @@
             </div>
         </script>
 
-        <script id="doneTemplate" type="text/x-handlebars-template">
+    <script id="doneTemplate" type="text/x-handlebars-template">
             <div class="todos__item-wrap">
                 <a href="#" id="doneDelete" class="button button__add form__close done__delete">
                 <svg class="button__add-icon doneDelete" viewBox="0 0 357 357">
@@ -97,8 +126,19 @@
                 <span class="todos__item-time">{{taskTime}}</span>
             </div>
         </script>
-        <!-- HADLEBARS TEMPLATE ENDS -->
 
-        <script src="js/bundle.js"></script>
-    </body>
+    <!-- HADLEBARS CALENDAR TEMPLATE STARTS -->
+    <script id="calendarTemplate" type="text/x-handlebars-template">
+        <a href="#" class="calendar__item" id="calendarItem" data-date={{fullDate}}>
+            <span class="calendar__day">{{day}}</span>
+            <span class="calendar__date">{{date}}</span>
+        </a>
+        </script>
+    <!-- HADLEBARS CALENDAR TEMPLATE ENDS -->
+
+    <!-- HADLEBARS TEMPLATE ENDS -->
+
+    <script src="js/bundle.js"></script>
+</body>
+
 </html>
