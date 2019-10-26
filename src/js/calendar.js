@@ -54,8 +54,17 @@ function handlebarsRenderCalendarItems() {
         let calendarItemTemplateObj = {
             fullDate: `${i - 1}.${moment().month() + 1}.${moment().year()}`,
             day: moment(`${moment().month() + 1}.${i}.${moment().year()}`).format("ddd"),
-            date: `${i - 1}.${moment().month() + 1}`
+            date: `${setDateField(i)}.${moment().month() + 1}`
         };
+        function setDateField(i) {
+            let day;
+            if (i - 1 < 9) {
+                day = "0" + i;
+            } else {
+                day = i;
+            }
+            return day;
+        }
         const source = document.getElementById("calendarTemplate").innerHTML;
         const template = Handlebars.compile(source);
         const html = template(calendarItemTemplateObj);

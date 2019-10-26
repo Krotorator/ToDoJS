@@ -12673,10 +12673,22 @@ _toConsumableArray(calendarItems).forEach(function (calendarItem) {
 
 function handlebarsRenderCalendarItems() {
   for (var i = 1; i < moment().daysInMonth() + 1; i++) {
+    var setDateField = function setDateField(i) {
+      var day;
+
+      if (i - 1 < 9) {
+        day = "0" + i;
+      } else {
+        day = i;
+      }
+
+      return day;
+    };
+
     var calendarItemTemplateObj = {
       fullDate: "".concat(i - 1, ".").concat(moment().month() + 1, ".").concat(moment().year()),
       day: moment("".concat(moment().month() + 1, ".").concat(i, ".").concat(moment().year())).format("ddd"),
-      date: "".concat(i - 1, ".").concat(moment().month() + 1)
+      date: "".concat(setDateField(i), ".").concat(moment().month() + 1)
     };
     var source = document.getElementById("calendarTemplate").innerHTML;
     var template = Handlebars.compile(source);
