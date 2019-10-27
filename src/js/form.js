@@ -3,9 +3,13 @@ import { renderAllExistTasks, renderAllDoneTasks } from "./main";
 const Handlebars = require("handlebars");
 
 const addForm = document.querySelector("#addForm");
+const editForm = document.querySelector("#editForm");
+
 const select = document.querySelector("#select");
 const taskInput = document.querySelector("#task");
+const editInput = document.querySelector("#edit");
 const addTask = document.querySelector("#addTask");
+const editTask = document.querySelector("#editTask");
 const tasksList = document.querySelector("#todos__items");
 const tasksContainer = document.querySelector("#tasksContainer");
 const doneContainer = document.querySelector("#doneContainer");
@@ -57,9 +61,14 @@ addTask.addEventListener("click", function() {
         let AllExistTasks = JSON.parse(localStorage.getItem(activeDate));
         renderAllExistTasks(AllExistTasks);
         if (AllExistTasks && AllExistTasks.toDo) {
-            const taskCounter = document.querySelector("#taskCounter");
-            taskCounter.innerText = parseInt(AllExistTasks.toDo.length);
+            const todoSignal = document.querySelector("#todoSignal");
+            todoSignal.innerText = parseInt(AllExistTasks.toDo.length);
         }
+
+        todoSignal.classList.add("signal-animate");
+        setTimeout(() => {
+            todoSignal.classList.remove("signal-animate");
+        }, 800);
 
         taskInput.value = "";
         closeForm();
@@ -70,6 +79,8 @@ addTask.addEventListener("click", function() {
         }, 1500);
     }
 });
+
+editTask.addEventListener("click", function() {});
 
 formCloseButton.addEventListener("click", function() {
     closeForm();
@@ -125,8 +136,8 @@ function renderDoneTask(obj) {
     doneTask.dataset.done = "true";
     doneTask.innerHTML = html;
     doneContainer.append(doneTask);
-    const doneCounter = document.querySelector("#doneCounter");
-    doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
+    // const doneCounter = document.querySelector("#doneCounter");
+    // doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
     doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
 }
 
@@ -157,7 +168,5 @@ function closeForm() {
     addForm.setAttribute("style", "display:none");
     overlay.classList.remove("overlay--active");
 }
-
-// console.log(getNowDate());
 
 export { getNowDate, renderDoneTask, renderNewTask };

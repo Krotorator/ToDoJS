@@ -9,8 +9,8 @@ export default function renderAllExistTasks(arr) {
             });
             arr.toDo.forEach(taskObj => {
                 renderNewTask(taskObj);
-                const taskCounter = document.querySelector("#taskCounter");
-                taskCounter.innerText = parseInt(arr.toDo.length);
+                const todoSignal = document.querySelector("#todoSignal");
+                todoSignal.innerText = parseInt(arr.toDo.length);
             });
         } else {
             renderNewTask(arr.toDo);
@@ -27,9 +27,27 @@ require("./calendar");
 const toDoLink = document.querySelector(".link__todo");
 const doneLink = document.querySelector(".link__done");
 const toDoBody = document.querySelector("#todos_body");
+const taskEdit = document.querySelector("#taskEdit");
+const editInput = document.querySelector("#edit");
 
-let allDoneDeletBtns = document.querySelectorAll("#doneDelete");
-
+taskEdit.addEventListener("click", function(e) {
+    editForm.setAttribute("style", "display:flex");
+    overlay.classList.add("overlay--active");
+    editInput.value = this.previousElementSibling.previousElementSibling.innerText;
+    editTask.addEventListener("click", () => {
+        const editInputNow = document.querySelector("#edit");
+        if (!editInput.value) {
+            editInput.classList.add("input-alert");
+            setTimeout(() => {
+                editInput.classList.remove("input-alert");
+            }, 1500);
+        } else {
+            this.previousElementSibling.previousElementSibling.innerText = editInputNow.value;
+            editForm.setAttribute("style", "display:none");
+            overlay.classList.remove("overlay--active");
+        }
+    });
+});
 toDoLink.addEventListener("click", () => {
     doneBody.classList.add("hide");
     doneLink.classList.remove("link--active");
@@ -42,10 +60,6 @@ doneLink.onclick = () => {
     doneBody.classList.remove("hide");
     doneLink.classList.add("link--active");
 };
-
-let allTasksArray = getAllTasksFromLocalStorage(getNowDate(getNowDate()));
-// renderAllExistTasks(allTasksArray);
-// renderAllDoneTasks(allTasksArray);
 
 function getAllTasksFromLocalStorage(key) {
     let existTasks = JSON.parse(localStorage.getItem(key));

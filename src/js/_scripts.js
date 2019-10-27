@@ -14,8 +14,6 @@ plus.addEventListener("click", function(e) {
 
 toDos.addEventListener("click", function(e) {
     if (e.target.tagName == "INPUT" && e.target.checked) {
-        console.log(e.target);
-
         taskDisapearAfterCheck(e.target);
         deleteTaskFromStorage(e.target);
         doneSignal.classList.add("signal-animate");
@@ -45,8 +43,8 @@ function taskDisapearAfterCheck(element) {
     setTimeout(() => {
         parrentItem.remove();
         parrentItem.classList.remove("todos__item--hide");
-        const taskCounter = document.querySelector("#taskCounter");
-        taskCounter.innerText = parseInt(taskCounter.innerText) - 1;
+        const todoSignal = document.querySelector("#todoSignal");
+        todoSignal.innerText = parseInt(todoSignal.innerText) - 1;
     }, 1000);
 }
 
@@ -55,8 +53,6 @@ function isDoneDisapearOnCloseBtn(element) {
     parrentItem.classList.add("todos__item--hide");
     setTimeout(() => {
         parrentItem.remove();
-        const doneCounter = document.querySelector("#doneCounter");
-        doneCounter.innerText = parseInt(doneCounter.innerText) - 1;
         doneSignal.innerText = parseInt(doneSignal.innerText) - 1;
     }, 1000);
 }
