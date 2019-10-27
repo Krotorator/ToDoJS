@@ -112,14 +112,15 @@
 
     <!-- HADLEBARS TEMPLATES STARTS -->
     <script id="taskTemplate" type="text/x-handlebars-template">
-            <div class="todos__item-wrap">
+            <div class="todos__item-wrap" >
                 <input
                     class="todos__item-checkbox"
                     type="checkbox"
                     name="check"
                     id={{check}}
+                    
                 />
-                <label class="todos__item-label" title={{title}} for={{check}}>{{taskText}}</label>
+                <label class="todos__item-label"  title={{title}} for={{check}} data-unique={{unique}}>{{taskText}}</label>
                 <span class="todos__item-time">{{taskTime}}</span>
                 <button class="button button__edit" id="taskEdit">Edit</button>
             </div>
@@ -134,7 +135,7 @@
                     </g>
                 </svg>
             </a>
-                <label class="todos__item-label" title={{title}} for={{check}}>{{taskText}}</label>
+                <label class="todos__item-label" title={{title}} for={{check}} data-unique={{unique}}>{{taskText}}</label>
                 <span class="todos__item-time">{{taskTime}}</span>
                 <button class="button button__edit" id="taskEdit">Edit</button>
             </div>

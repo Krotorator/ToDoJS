@@ -431,8 +431,8 @@ body {
 .done__delete {
   width: 20px;
   height: 20px;
-  top: 10%;
-
+  top: 50%;
+  transform: translateY(-50%);
   .button__add-icon {
     width: 10px;
   }

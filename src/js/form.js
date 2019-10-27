@@ -44,11 +44,15 @@ addTask.addEventListener("click", function() {
         } else {
             idFor = "check0";
         }
+
         let taskObj = {
             taskText: taskInput.value,
             taskTime: select.value,
             title: taskInput.value,
-            idFor: idFor
+            idFor: idFor,
+            unique: Math.random()
+                .toString()
+                .slice(2, 10)
         };
         allTasks.toDo = [];
         allTasks.toDo.push(taskObj);
@@ -80,8 +84,6 @@ addTask.addEventListener("click", function() {
     }
 });
 
-editTask.addEventListener("click", function() {});
-
 formCloseButton.addEventListener("click", function() {
     closeForm();
 });
@@ -109,7 +111,8 @@ function renderNewTask(obj) {
         taskText: obj.taskText,
         taskTime: obj.taskTime,
         check: obj.idFor,
-        title: obj.title
+        title: obj.title,
+        unique: obj.unique
     };
     const html = template(context);
     let newTask = document.createElement("div");
@@ -127,7 +130,8 @@ function renderDoneTask(obj) {
         taskText: obj.taskText,
         taskTime: obj.taskTime,
         check: obj.idFor,
-        title: obj.title
+        title: obj.title,
+        unique: obj.unique
     };
     const html = template(context);
     let doneTask = document.createElement("div");

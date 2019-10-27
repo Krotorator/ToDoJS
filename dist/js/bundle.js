@@ -12860,7 +12860,8 @@ addTask.addEventListener("click", function () {
       taskText: taskInput.value,
       taskTime: select.value,
       title: taskInput.value,
-      idFor: idFor
+      idFor: idFor,
+      unique: Math.random().toString().slice(2, 10)
     };
     allTasks.toDo = [];
     allTasks.toDo.push(taskObj);
@@ -12892,7 +12893,6 @@ addTask.addEventListener("click", function () {
     }, 1500);
   }
 });
-editTask.addEventListener("click", function () {});
 formCloseButton.addEventListener("click", function () {
   closeForm();
 });
@@ -12922,7 +12922,8 @@ function renderNewTask(obj) {
     taskText: obj.taskText,
     taskTime: obj.taskTime,
     check: obj.idFor,
-    title: obj.title
+    title: obj.title,
+    unique: obj.unique
   };
   var html = template(context);
   var newTask = document.createElement("div");
@@ -12940,7 +12941,8 @@ function renderDoneTask(obj) {
     taskText: obj.taskText,
     taskTime: obj.taskTime,
     check: obj.idFor,
-    title: obj.title
+    title: obj.title,
+    unique: obj.unique
   };
   var html = template(context);
   var doneTask = document.createElement("div");
@@ -12993,6 +12995,14 @@ exports.default = exports.renderAllExistTasks = renderAllExistTasks;
 
 var _form = require("./form");
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function renderAllExistTasks(arr) {
   if (arr && arr.toDo) {
     if (Array.isArray(arr.toDo)) {
@@ -13022,28 +13032,58 @@ require("./calendar"); // window.onload = function() {
 var toDoLink = document.querySelector(".link__todo");
 var doneLink = document.querySelector(".link__done");
 var toDoBody = document.querySelector("#todos_body");
-var taskEdit = document.querySelector("#taskEdit");
+
+var taskEditAll = _toConsumableArray(document.querySelectorAll("#taskEdit"));
+
 var editInput = document.querySelector("#edit");
-taskEdit.addEventListener("click", function (e) {
-  var _this = this;
+var toDos = document.querySelector("#toDos");
+toDos.addEventListener("click", function (e) {
+  if (e.target.id == "taskEdit") {
+    editForm.setAttribute("style", "display:flex");
+    overlay.classList.add("overlay--active");
+    editInput.value = e.target.previousElementSibling.previousElementSibling.innerText;
+    editTask.addEventListener("click", function () {
+      var editInputNow = document.querySelector("#edit");
 
-  editForm.setAttribute("style", "display:flex");
-  overlay.classList.add("overlay--active");
-  editInput.value = this.previousElementSibling.previousElementSibling.innerText;
-  editTask.addEventListener("click", function () {
-    var editInputNow = document.querySelector("#edit");
+      if (!editInput.value) {
+        editInput.classList.add("input-alert");
+        setTimeout(function () {
+          editInput.classList.remove("input-alert");
+        }, 1500);
+      } else {
+        (function () {
+          e.target.previousElementSibling.previousElementSibling.innerText = editInputNow.value;
+          editForm.setAttribute("style", "display:none");
+          overlay.classList.remove("overlay--active");
+          var thisDate;
 
-    if (!editInput.value) {
-      editInput.classList.add("input-alert");
-      setTimeout(function () {
-        editInput.classList.remove("input-alert");
-      }, 1500);
-    } else {
-      _this.previousElementSibling.previousElementSibling.innerText = editInputNow.value;
-      editForm.setAttribute("style", "display:none");
-      overlay.classList.remove("overlay--active");
-    }
-  });
+          var calendarDays = _toConsumableArray(calendarContainer.children);
+
+          calendarDays.forEach(function (day) {
+            if (day.firstElementChild.classList.contains("calendar__item-active")) {
+              thisDate = day.firstElementChild.dataset.date;
+            }
+          });
+          var thisStorage = JSON.parse(localStorage.getItem(thisDate));
+
+          for (var taskType in thisStorage) {
+            thisStorage[taskType].forEach(function (sotorageItem) {
+              console.log(sotorageItem);
+              console.log(e.target.previousElementSibling.previousElementSibling);
+
+              if (sotorageItem.unique == e.target.previousElementSibling.previousElementSibling.dataset.unique) {
+                sotorageItem.taskText = e.target.previousElementSibling.previousElementSibling.innerText;
+                console.log(sotorageItem);
+                console.log(thisStorage);
+              }
+            });
+            localStorage.setItem(thisDate, JSON.stringify(thisStorage));
+          } // console.log(thisStorage);
+
+        })();
+      }
+    });
+  }
 });
 toDoLink.addEventListener("click", function () {
   doneBody.classList.add("hide");
