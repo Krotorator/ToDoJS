@@ -12526,7 +12526,6 @@ plus.addEventListener("click", function (e) {
 });
 toDos.addEventListener("click", function (e) {
   if (e.target.tagName == "INPUT" && e.target.checked) {
-    console.log(e.target);
     taskDisapearAfterCheck(e.target);
     deleteTaskFromStorage(e.target);
     doneSignal.classList.add("signal-animate");
@@ -12554,8 +12553,8 @@ function taskDisapearAfterCheck(element) {
   setTimeout(function () {
     parrentItem.remove();
     parrentItem.classList.remove("todos__item--hide");
-    var taskCounter = document.querySelector("#taskCounter");
-    taskCounter.innerText = parseInt(taskCounter.innerText) - 1;
+    var todoSignal = document.querySelector("#todoSignal");
+    todoSignal.innerText = parseInt(todoSignal.innerText) - 1;
   }, 1000);
 }
 
@@ -12564,8 +12563,6 @@ function isDoneDisapearOnCloseBtn(element) {
   parrentItem.classList.add("todos__item--hide");
   setTimeout(function () {
     parrentItem.remove();
-    var doneCounter = document.querySelector("#doneCounter");
-    doneCounter.innerText = parseInt(doneCounter.innerText) - 1;
     doneSignal.innerText = parseInt(doneSignal.innerText) - 1;
   }, 1000);
 }
@@ -12632,6 +12629,7 @@ var calendarItems = document.querySelectorAll("#calendarItem");
 
 if (calendarContainer.children) {
   setVisibleAndActiveCalendarItem();
+  HighlightNotEmptyDay();
   arrowPrev.addEventListener("click", function (e) {
     controlCarousel("prev");
   });
@@ -12654,17 +12652,14 @@ _toConsumableArray(calendarItems).forEach(function (calendarItem) {
         var allTasksArray = JSON.parse(localStorage.getItem(calendarItem.dataset.date));
         (0, _main.renderAllExistTasks)(allTasksArray);
         (0, _main.renderAllDoneTasks)(allTasksArray);
-        var doneCounter = document.querySelector("#doneCounter");
-        var taskCounter = document.querySelector("#taskCounter");
+        var doneSignal = document.querySelector("#doneSignal");
 
         if (!allTasksArray) {
-          doneCounter.innerText = 0;
           doneSignal.innerText = 0;
-          taskCounter.innerText = 0;
+          doneSignal.innerText = 0;
         } else {
-          doneCounter.innerText = allTasksArray.isDone.length;
           doneSignal.innerText = allTasksArray.isDone.length;
-          taskCounter.innerText = allTasksArray.toDo.length;
+          doneSignal.innerText = allTasksArray.toDo.length;
         }
       }
     });
@@ -12766,6 +12761,16 @@ function setVisibleAndActiveCalendarItem() {
   (0, _main.renderAllDoneTasks)(allTasksArray);
 }
 
+function HighlightNotEmptyDay() {
+  var calendarDays = _toConsumableArray(calendarContainer.children);
+
+  calendarDays.forEach(function (day) {
+    if (localStorage.getItem(day.firstElementChild.dataset.date)) {
+      day.firstElementChild.classList.add("calendar__item-highlighted");
+    }
+  });
+}
+
 },{"./main":48,"handlebars":31,"moment":43}],46:[function(require,module,exports){
 "use strict";
 
@@ -12812,9 +12817,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var Handlebars = require("handlebars");
 
 var addForm = document.querySelector("#addForm");
+var editForm = document.querySelector("#editForm");
 var select = document.querySelector("#select");
 var taskInput = document.querySelector("#task");
+var editInput = document.querySelector("#edit");
 var addTask = document.querySelector("#addTask");
+var editTask = document.querySelector("#editTask");
 var tasksList = document.querySelector("#todos__items");
 var tasksContainer = document.querySelector("#tasksContainer");
 var doneContainer = document.querySelector("#doneContainer");
@@ -12852,7 +12860,8 @@ addTask.addEventListener("click", function () {
       taskText: taskInput.value,
       taskTime: select.value,
       title: taskInput.value,
-      idFor: idFor
+      idFor: idFor,
+      unique: Math.random().toString().slice(2, 10)
     };
     allTasks.toDo = [];
     allTasks.toDo.push(taskObj);
@@ -12866,10 +12875,15 @@ addTask.addEventListener("click", function () {
     (0, _main.renderAllExistTasks)(AllExistTasks);
 
     if (AllExistTasks && AllExistTasks.toDo) {
-      var taskCounter = document.querySelector("#taskCounter");
-      taskCounter.innerText = parseInt(AllExistTasks.toDo.length);
+      var _todoSignal = document.querySelector("#todoSignal");
+
+      _todoSignal.innerText = parseInt(AllExistTasks.toDo.length);
     }
 
+    todoSignal.classList.add("signal-animate");
+    setTimeout(function () {
+      todoSignal.classList.remove("signal-animate");
+    }, 800);
     taskInput.value = "";
     closeForm();
   } else {
@@ -12908,7 +12922,8 @@ function renderNewTask(obj) {
     taskText: obj.taskText,
     taskTime: obj.taskTime,
     check: obj.idFor,
-    title: obj.title
+    title: obj.title,
+    unique: obj.unique
   };
   var html = template(context);
   var newTask = document.createElement("div");
@@ -12926,7 +12941,8 @@ function renderDoneTask(obj) {
     taskText: obj.taskText,
     taskTime: obj.taskTime,
     check: obj.idFor,
-    title: obj.title
+    title: obj.title,
+    unique: obj.unique
   };
   var html = template(context);
   var doneTask = document.createElement("div");
@@ -12934,9 +12950,9 @@ function renderDoneTask(obj) {
   doneTask.setAttribute("id", "toDoItem");
   doneTask.dataset.done = "true";
   doneTask.innerHTML = html;
-  doneContainer.append(doneTask);
-  var doneCounter = document.querySelector("#doneCounter");
-  doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
+  doneContainer.append(doneTask); // const doneCounter = document.querySelector("#doneCounter");
+  // doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
+
   doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
 }
 
@@ -12966,7 +12982,7 @@ function setAllTasksToLocalStorage(key, valueArray) {
 function closeForm() {
   addForm.setAttribute("style", "display:none");
   overlay.classList.remove("overlay--active");
-} // console.log(getNowDate());
+}
 
 },{"./main":48,"handlebars":31}],48:[function(require,module,exports){
 "use strict";
@@ -12979,6 +12995,14 @@ exports.default = exports.renderAllExistTasks = renderAllExistTasks;
 
 var _form = require("./form");
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function renderAllExistTasks(arr) {
   if (arr && arr.toDo) {
     if (Array.isArray(arr.toDo)) {
@@ -12987,8 +13011,8 @@ function renderAllExistTasks(arr) {
       });
       arr.toDo.forEach(function (taskObj) {
         (0, _form.renderNewTask)(taskObj);
-        var taskCounter = document.querySelector("#taskCounter");
-        taskCounter.innerText = parseInt(arr.toDo.length);
+        var todoSignal = document.querySelector("#todoSignal");
+        todoSignal.innerText = parseInt(arr.toDo.length);
       });
     } else {
       (0, _form.renderNewTask)(arr.toDo);
@@ -13008,7 +13032,59 @@ require("./calendar"); // window.onload = function() {
 var toDoLink = document.querySelector(".link__todo");
 var doneLink = document.querySelector(".link__done");
 var toDoBody = document.querySelector("#todos_body");
-var allDoneDeletBtns = document.querySelectorAll("#doneDelete");
+
+var taskEditAll = _toConsumableArray(document.querySelectorAll("#taskEdit"));
+
+var editInput = document.querySelector("#edit");
+var toDos = document.querySelector("#toDos");
+toDos.addEventListener("click", function (e) {
+  if (e.target.id == "taskEdit") {
+    editForm.setAttribute("style", "display:flex");
+    overlay.classList.add("overlay--active");
+    editInput.value = e.target.previousElementSibling.previousElementSibling.innerText;
+    editTask.addEventListener("click", function () {
+      var editInputNow = document.querySelector("#edit");
+
+      if (!editInput.value) {
+        editInput.classList.add("input-alert");
+        setTimeout(function () {
+          editInput.classList.remove("input-alert");
+        }, 1500);
+      } else {
+        (function () {
+          e.target.previousElementSibling.previousElementSibling.innerText = editInputNow.value;
+          editForm.setAttribute("style", "display:none");
+          overlay.classList.remove("overlay--active");
+          var thisDate;
+
+          var calendarDays = _toConsumableArray(calendarContainer.children);
+
+          calendarDays.forEach(function (day) {
+            if (day.firstElementChild.classList.contains("calendar__item-active")) {
+              thisDate = day.firstElementChild.dataset.date;
+            }
+          });
+          var thisStorage = JSON.parse(localStorage.getItem(thisDate));
+
+          for (var taskType in thisStorage) {
+            thisStorage[taskType].forEach(function (sotorageItem) {
+              console.log(sotorageItem);
+              console.log(e.target.previousElementSibling.previousElementSibling);
+
+              if (sotorageItem.unique == e.target.previousElementSibling.previousElementSibling.dataset.unique) {
+                sotorageItem.taskText = e.target.previousElementSibling.previousElementSibling.innerText;
+                console.log(sotorageItem);
+                console.log(thisStorage);
+              }
+            });
+            localStorage.setItem(thisDate, JSON.stringify(thisStorage));
+          } // console.log(thisStorage);
+
+        })();
+      }
+    });
+  }
+});
 toDoLink.addEventListener("click", function () {
   doneBody.classList.add("hide");
   doneLink.classList.remove("link--active");
@@ -13022,9 +13098,6 @@ doneLink.onclick = function () {
   doneBody.classList.remove("hide");
   doneLink.classList.add("link--active");
 };
-
-var allTasksArray = getAllTasksFromLocalStorage((0, _form.getNowDate)((0, _form.getNowDate)())); // renderAllExistTasks(allTasksArray);
-// renderAllDoneTasks(allTasksArray);
 
 function getAllTasksFromLocalStorage(key) {
   var existTasks = JSON.parse(localStorage.getItem(key));

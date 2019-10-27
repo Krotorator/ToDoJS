@@ -10,7 +10,7 @@ const calendarItems = document.querySelectorAll("#calendarItem");
 
 if (calendarContainer.children) {
     setVisibleAndActiveCalendarItem();
-
+    HighlightNotEmptyDay();
     arrowPrev.addEventListener("click", e => {
         controlCarousel("prev");
     });
@@ -32,17 +32,14 @@ if (calendarContainer.children) {
                 let allTasksArray = JSON.parse(localStorage.getItem(calendarItem.dataset.date));
                 renderAllExistTasks(allTasksArray);
                 renderAllDoneTasks(allTasksArray);
-                const doneCounter = document.querySelector("#doneCounter");
-                const taskCounter = document.querySelector("#taskCounter");
+                const doneSignal = document.querySelector("#doneSignal");
 
                 if (!allTasksArray) {
-                    doneCounter.innerText = 0;
                     doneSignal.innerText = 0;
-                    taskCounter.innerText = 0;
+                    doneSignal.innerText = 0;
                 } else {
-                    doneCounter.innerText = allTasksArray.isDone.length;
                     doneSignal.innerText = allTasksArray.isDone.length;
-                    taskCounter.innerText = allTasksArray.toDo.length;
+                    doneSignal.innerText = allTasksArray.toDo.length;
                 }
             }
         });
@@ -133,4 +130,13 @@ function setVisibleAndActiveCalendarItem() {
     );
     renderAllExistTasks(allTasksArray);
     renderAllDoneTasks(allTasksArray);
+}
+
+function HighlightNotEmptyDay() {
+    const calendarDays = [...calendarContainer.children];
+    calendarDays.forEach(day => {
+        if (localStorage.getItem(day.firstElementChild.dataset.date)) {
+            day.firstElementChild.classList.add("calendar__item-highlighted");
+        }
+    });
 }

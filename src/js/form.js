@@ -3,9 +3,13 @@ import { renderAllExistTasks, renderAllDoneTasks } from "./main";
 const Handlebars = require("handlebars");
 
 const addForm = document.querySelector("#addForm");
+const editForm = document.querySelector("#editForm");
+
 const select = document.querySelector("#select");
 const taskInput = document.querySelector("#task");
+const editInput = document.querySelector("#edit");
 const addTask = document.querySelector("#addTask");
+const editTask = document.querySelector("#editTask");
 const tasksList = document.querySelector("#todos__items");
 const tasksContainer = document.querySelector("#tasksContainer");
 const doneContainer = document.querySelector("#doneContainer");
@@ -40,11 +44,15 @@ addTask.addEventListener("click", function() {
         } else {
             idFor = "check0";
         }
+
         let taskObj = {
             taskText: taskInput.value,
             taskTime: select.value,
             title: taskInput.value,
-            idFor: idFor
+            idFor: idFor,
+            unique: Math.random()
+                .toString()
+                .slice(2, 10)
         };
         allTasks.toDo = [];
         allTasks.toDo.push(taskObj);
@@ -57,9 +65,14 @@ addTask.addEventListener("click", function() {
         let AllExistTasks = JSON.parse(localStorage.getItem(activeDate));
         renderAllExistTasks(AllExistTasks);
         if (AllExistTasks && AllExistTasks.toDo) {
-            const taskCounter = document.querySelector("#taskCounter");
-            taskCounter.innerText = parseInt(AllExistTasks.toDo.length);
+            const todoSignal = document.querySelector("#todoSignal");
+            todoSignal.innerText = parseInt(AllExistTasks.toDo.length);
         }
+
+        todoSignal.classList.add("signal-animate");
+        setTimeout(() => {
+            todoSignal.classList.remove("signal-animate");
+        }, 800);
 
         taskInput.value = "";
         closeForm();
@@ -98,7 +111,8 @@ function renderNewTask(obj) {
         taskText: obj.taskText,
         taskTime: obj.taskTime,
         check: obj.idFor,
-        title: obj.title
+        title: obj.title,
+        unique: obj.unique
     };
     const html = template(context);
     let newTask = document.createElement("div");
@@ -116,7 +130,8 @@ function renderDoneTask(obj) {
         taskText: obj.taskText,
         taskTime: obj.taskTime,
         check: obj.idFor,
-        title: obj.title
+        title: obj.title,
+        unique: obj.unique
     };
     const html = template(context);
     let doneTask = document.createElement("div");
@@ -125,8 +140,8 @@ function renderDoneTask(obj) {
     doneTask.dataset.done = "true";
     doneTask.innerHTML = html;
     doneContainer.append(doneTask);
-    const doneCounter = document.querySelector("#doneCounter");
-    doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
+    // const doneCounter = document.querySelector("#doneCounter");
+    // doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
     doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
 }
 
@@ -157,7 +172,5 @@ function closeForm() {
     addForm.setAttribute("style", "display:none");
     overlay.classList.remove("overlay--active");
 }
-
-// console.log(getNowDate());
 
 export { getNowDate, renderDoneTask, renderNewTask };
