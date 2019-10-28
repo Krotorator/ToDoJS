@@ -1,5 +1,5 @@
 import { getNowDate, renderDoneTask, renderNewTask } from "./form";
-import { thisDate } from "./main";
+import { thisDate, renderAllExistTasks } from "./main";
 import { HighlightNotEmptyDay } from "./calendar";
 export { deleteIsDoneFromStorage, isDoneDisapearOnCloseBtn };
 
@@ -92,10 +92,13 @@ function deleteIsDoneFromStorage(label, flag = false) {
             deletedDone = existTasks.isDone.splice(i, 1);
             if (flag) {
                 existTasks.toDo.push(deletedDone[0]);
-                renderNewTask(deletedDone[0]);
+                // renderNewTask(deletedDone[0]);
             }
         }
     }
+    console.log(existTasks);
+    tasksContainer.innerHTML = "";
     localStorage.setItem(thisDate(), JSON.stringify(existTasks));
+    renderAllExistTasks(existTasks);
     HighlightNotEmptyDay();
 }

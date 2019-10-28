@@ -32,6 +32,7 @@ const toDoBody = document.querySelector("#todos_body");
 const taskEditAll = [...document.querySelectorAll("#taskEdit")];
 const editInput = document.querySelector("#edit");
 const deleteAllBtn = document.querySelector("#deleteAll");
+const deletePopup = document.querySelector("#deletePopup");
 const toDos = document.querySelector("#toDos");
 
 toDos.addEventListener("click", function(e) {
@@ -76,7 +77,6 @@ toDos.addEventListener("click", function(e) {
         );
         isDoneDisapearOnCloseBtn(e.target.parentElement);
         const todoSignal = document.querySelector("#todoSignal");
-        todoSignal.innerText = parseInt(todoSignal.innerText) + 1;
         todoSignal.classList.add("signal-animate");
         setTimeout(() => {
             todoSignal.classList.remove("signal-animate");
@@ -102,17 +102,29 @@ doneLink.onclick = () => {
 };
 
 deleteAllBtn.addEventListener("click", () => {
-    const calendarDays = [...calendarContainer.children];
-    calendarDays.forEach(day => {
-        day.firstElementChild.classList.remove("calendar__item-highlighted");
-        let keyDate;
-        keyDate = day.firstElementChild.dataset.date;
-        localStorage.removeItem(keyDate);
-    });
-    tasksContainer.innerHTML = "";
-    doneContainer.innerHTML = "";
-    todoSignal.innerText = "";
-    doneSignal.innerText = "";
+    deletePopup.setAttribute("style", "display: flex");
+    overlay.classList.add("overlay--active");
+});
+
+deletePopup.addEventListener("click", e => {
+    if (e.target.id == "deleteConfirm") {
+        const calendarDays = [...calendarContainer.children];
+        calendarDays.forEach(day => {
+            day.firstElementChild.classList.remove("calendar__item-highlighted");
+            let keyDate;
+            keyDate = day.firstElementChild.dataset.date;
+            localStorage.removeItem(keyDate);
+        });
+        tasksContainer.innerHTML = "";
+        doneContainer.innerHTML = "";
+        todoSignal.innerText = 0;
+        doneSignal.innerText = 0;
+        deletePopup.setAttribute("style", "display: none");
+        overlay.classList.remove("overlay--active");
+    } else if (e.target.id == "deleteCancel" || e.target.id == "deleteClose") {
+        deletePopup.setAttribute("style", "display: none");
+        overlay.classList.remove("overlay--active");
+    }
 });
 
 function getAllTasksFromLocalStorage(key) {

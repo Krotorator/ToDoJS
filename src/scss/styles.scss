@@ -245,7 +245,6 @@ body {
   display: inline-block;
   width: 50px;
   height: 50px;
-  // margin-top: 0.2vw;
   background-color: #aff06a;
   text-align: center;
   vertical-align: middle;
@@ -321,6 +320,13 @@ body {
     left: 65%;
     bottom: 10px;
     height: 20px;
+  }
+  &__wrap {
+    display: flex;
+    justify-content: flex-end;
+    .button {
+      margin: auto 7px 0;
+    }
   }
 }
 
@@ -445,6 +451,28 @@ body {
     .button__add-icon {
       width: 18px;
       transform: translate(-50%, -50%) rotate(45deg);
+    }
+  }
+  &__delete-popup {
+    min-height: 180px;
+    justify-content: space-between;
+    a {
+      position: relative;
+    }
+    #deleteClose {
+      position: absolute;
+      display: inline-block;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 2;
+    }
+    h4 {
+      font-size: 18px;
+      font-weight: 700;
+      position: static;
+      margin-top: 0px;
     }
   }
 }
