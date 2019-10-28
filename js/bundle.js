@@ -12505,6 +12505,10 @@ exports.SourceNode = require('./lib/source-node').SourceNode;
 
 var _form = require("./form");
 
+var _main = require("./main");
+
+var _calendar = require("./calendar");
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -12589,23 +12593,31 @@ function deleteTaskFromStorage(checkbox) {
   }
 
   localStorage.setItem(activeDate, JSON.stringify(existTasks));
+  (0, _calendar.HighlightNotEmptyDay)();
 }
 
 function deleteIsDoneFromStorage(label) {
-  var existTasks = JSON.parse(localStorage.getItem((0, _form.getNowDate)()));
+  var existTasks = JSON.parse(localStorage.getItem((0, _main.thisDate)()));
+  console.log(existTasks);
   var deletedDone;
 
   for (var i = 0; i < existTasks.isDone.length; i++) {
     if (existTasks.isDone[i].idFor == label.getAttribute("for")) {
-      deletedDone = existTasks.isDone.splice(i, 1); // console.log(existTasks.isDone);
+      deletedDone = existTasks.isDone.splice(i, 1);
     }
   }
 
-  localStorage.setItem((0, _form.getNowDate)(), JSON.stringify(existTasks));
+  localStorage.setItem((0, _main.thisDate)(), JSON.stringify(existTasks));
+  (0, _calendar.HighlightNotEmptyDay)();
 }
 
-},{"./form":47}],45:[function(require,module,exports){
+},{"./calendar":45,"./form":47,"./main":48}],45:[function(require,module,exports){
 "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.HighlightNotEmptyDay = HighlightNotEmptyDay;
 
 var _main = require("./main");
 
@@ -12659,7 +12671,7 @@ _toConsumableArray(calendarItems).forEach(function (calendarItem) {
           doneSignal.innerText = 0;
         } else {
           doneSignal.innerText = allTasksArray.isDone.length;
-          doneSignal.innerText = allTasksArray.toDo.length;
+          todoSignal.innerText = allTasksArray.toDo.length;
         }
       }
     });
@@ -12766,7 +12778,11 @@ function HighlightNotEmptyDay() {
 
   calendarDays.forEach(function (day) {
     if (localStorage.getItem(day.firstElementChild.dataset.date)) {
-      day.firstElementChild.classList.add("calendar__item-highlighted");
+      if (JSON.parse(localStorage.getItem(day.firstElementChild.dataset.date)).isDone.length > 0 || JSON.parse(localStorage.getItem(day.firstElementChild.dataset.date)).toDo.length > 0) {
+        day.firstElementChild.classList.add("calendar__item-highlighted");
+      } else {
+        day.firstElementChild.classList.remove("calendar__item-highlighted");
+      }
     }
   });
 }
@@ -12806,6 +12822,8 @@ exports.renderNewTask = renderNewTask;
 
 var _main = require("./main");
 
+var _calendar = require("./calendar");
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -12823,6 +12841,7 @@ var taskInput = document.querySelector("#task");
 var editInput = document.querySelector("#edit");
 var addTask = document.querySelector("#addTask");
 var editTask = document.querySelector("#editTask");
+var editClose = document.querySelector("#editClose");
 var tasksList = document.querySelector("#todos__items");
 var tasksContainer = document.querySelector("#tasksContainer");
 var doneContainer = document.querySelector("#doneContainer");
@@ -12892,6 +12911,8 @@ addTask.addEventListener("click", function () {
       taskInput.classList.remove("input-alert");
     }, 1500);
   }
+
+  (0, _calendar.HighlightNotEmptyDay)();
 });
 formCloseButton.addEventListener("click", function () {
   closeForm();
@@ -12950,9 +12971,7 @@ function renderDoneTask(obj) {
   doneTask.setAttribute("id", "toDoItem");
   doneTask.dataset.done = "true";
   doneTask.innerHTML = html;
-  doneContainer.append(doneTask); // const doneCounter = document.querySelector("#doneCounter");
-  // doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
-
+  doneContainer.append(doneTask);
   doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
 }
 
@@ -12984,7 +13003,7 @@ function closeForm() {
   overlay.classList.remove("overlay--active");
 }
 
-},{"./main":48,"handlebars":31}],48:[function(require,module,exports){
+},{"./calendar":45,"./main":48,"handlebars":31}],48:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12992,6 +13011,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.renderAllDoneTasks = renderAllDoneTasks;
 exports.default = exports.renderAllExistTasks = renderAllExistTasks;
+exports.thisDate = thisDate;
 
 var _form = require("./form");
 
@@ -13039,6 +13059,7 @@ var editInput = document.querySelector("#edit");
 var toDos = document.querySelector("#toDos");
 toDos.addEventListener("click", function (e) {
   if (e.target.id == "taskEdit") {
+    console.log(e.target.id);
     editForm.setAttribute("style", "display:flex");
     overlay.classList.add("overlay--active");
     editInput.value = e.target.previousElementSibling.previousElementSibling.innerText;
@@ -13051,39 +13072,26 @@ toDos.addEventListener("click", function (e) {
           editInput.classList.remove("input-alert");
         }, 1500);
       } else {
-        (function () {
-          e.target.previousElementSibling.previousElementSibling.innerText = editInputNow.value;
-          editForm.setAttribute("style", "display:none");
-          overlay.classList.remove("overlay--active");
-          var thisDate;
+        e.target.previousElementSibling.previousElementSibling.innerText = editInputNow.value;
+        editForm.setAttribute("style", "display:none");
+        overlay.classList.remove("overlay--active");
+        var thisStorage = JSON.parse(localStorage.getItem(thisDate()));
 
-          var calendarDays = _toConsumableArray(calendarContainer.children);
-
-          calendarDays.forEach(function (day) {
-            if (day.firstElementChild.classList.contains("calendar__item-active")) {
-              thisDate = day.firstElementChild.dataset.date;
+        for (var taskType in thisStorage) {
+          thisStorage[taskType].forEach(function (sotorageItem) {
+            if (sotorageItem.unique == e.target.previousElementSibling.previousElementSibling.dataset.unique) {
+              sotorageItem.taskText = e.target.previousElementSibling.previousElementSibling.innerText;
             }
           });
-          var thisStorage = JSON.parse(localStorage.getItem(thisDate));
-
-          for (var taskType in thisStorage) {
-            thisStorage[taskType].forEach(function (sotorageItem) {
-              console.log(sotorageItem);
-              console.log(e.target.previousElementSibling.previousElementSibling);
-
-              if (sotorageItem.unique == e.target.previousElementSibling.previousElementSibling.dataset.unique) {
-                sotorageItem.taskText = e.target.previousElementSibling.previousElementSibling.innerText;
-                console.log(sotorageItem);
-                console.log(thisStorage);
-              }
-            });
-            localStorage.setItem(thisDate, JSON.stringify(thisStorage));
-          } // console.log(thisStorage);
-
-        })();
+          localStorage.setItem(thisDate, JSON.stringify(thisStorage));
+        }
       }
     });
   }
+});
+editClose.addEventListener("click", function (e) {
+  editForm.setAttribute("style", "display:none");
+  overlay.classList.remove("overlay--active");
 });
 toDoLink.addEventListener("click", function () {
   doneBody.classList.add("hide");
@@ -13114,6 +13122,19 @@ function renderAllDoneTasks(arr) {
       (0, _form.renderDoneTask)(arr.isDone);
     }
   }
+}
+
+function thisDate() {
+  var thisDate;
+
+  var calendarDays = _toConsumableArray(calendarContainer.children);
+
+  calendarDays.forEach(function (day) {
+    if (day.firstElementChild.classList.contains("calendar__item-active")) {
+      thisDate = day.firstElementChild.dataset.date;
+    }
+  });
+  return thisDate;
 } // };
 
 },{"./_scripts":44,"./calendar":45,"./done":46,"./form":47}]},{},[48]);
