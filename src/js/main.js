@@ -30,6 +30,7 @@ const doneLink = document.querySelector(".link__done");
 const toDoBody = document.querySelector("#todos_body");
 const taskEditAll = [...document.querySelectorAll("#taskEdit")];
 const editInput = document.querySelector("#edit");
+const deleteAllBtn = document.querySelector("#deleteAll");
 const toDos = document.querySelector("#toDos");
 
 toDos.addEventListener("click", function(e) {
@@ -98,6 +99,10 @@ doneLink.onclick = () => {
     doneBody.classList.remove("hide");
     doneLink.classList.add("link--active");
 };
+
+deleteAllBtn.addEventListener("click", () => {
+    localStorage.clear();
+});
 
 function getAllTasksFromLocalStorage(key) {
     let existTasks = JSON.parse(localStorage.getItem(key));
