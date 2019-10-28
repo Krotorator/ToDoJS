@@ -215,6 +215,10 @@ body {
       position: absolute;
       text-align: center;
       line-height: 1.4;
+      @media screen and(max-width: 350px) {
+        top: 0px;
+        right: -10px;
+      }
     }
   }
   &--active {
@@ -230,7 +234,6 @@ body {
 .todos__footer {
   padding-bottom: 20px;
   padding-top: 10px;
-  margin-top: auto;
   display: flex;
   justify-content: space-between;
   position: relative;
