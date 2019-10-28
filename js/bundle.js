@@ -13070,6 +13070,7 @@ var toDoBody = document.querySelector("#todos_body");
 var taskEditAll = _toConsumableArray(document.querySelectorAll("#taskEdit"));
 
 var editInput = document.querySelector("#edit");
+var deleteAllBtn = document.querySelector("#deleteAll");
 var toDos = document.querySelector("#toDos");
 toDos.addEventListener("click", function (e) {
   if (e.target.id == "taskEdit") {
@@ -13128,6 +13129,10 @@ doneLink.onclick = function () {
   doneBody.classList.remove("hide");
   doneLink.classList.add("link--active");
 };
+
+deleteAllBtn.addEventListener("click", function () {
+  localStorage.clear();
+});
 
 function getAllTasksFromLocalStorage(key) {
   var existTasks = JSON.parse(localStorage.getItem(key));
