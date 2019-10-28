@@ -12780,9 +12780,8 @@ function setVisibleAndActiveCalendarItem() {
     calendarDays[i].setAttribute("style", "display:block");
   }
 
-  var allTasksArray = JSON.parse(localStorage.getItem(calendarDays[nowDay].firstElementChild.dataset.date));
-  (0, _main.renderAllExistTasks)(allTasksArray);
-  (0, _main.renderAllDoneTasks)(allTasksArray);
+  var allTasksArray = JSON.parse(localStorage.getItem(calendarDays[nowDay].firstElementChild.dataset.date)); // renderAllExistTasks(allTasksArray);
+  // renderAllDoneTasks(allTasksArray);
 }
 
 function HighlightNotEmptyDay() {
@@ -13027,6 +13026,8 @@ exports.thisDate = thisDate;
 
 var _form = require("./form");
 
+var _calendar = require("./calendar");
+
 var _scripts = require("./_scripts");
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -13097,18 +13098,22 @@ toDos.addEventListener("click", function (e) {
               sotorageItem.taskText = e.target.previousElementSibling.previousElementSibling.innerText;
             }
           });
-          localStorage.setItem(thisDate, JSON.stringify(thisStorage));
+          localStorage.setItem(thisDate(), JSON.stringify(thisStorage));
         }
       }
     });
   } else if (e.target.id == "returnLayer") {
     (0, _scripts.deleteIsDoneFromStorage)(e.target.parentElement.previousElementSibling.previousElementSibling.previousElementSibling, true);
     (0, _scripts.isDoneDisapearOnCloseBtn)(e.target.parentElement);
-    var todoSignal = document.querySelector("#todoSignal");
-    todoSignal.innerText = parseInt(todoSignal.innerText) + 1;
-    todoSignal.classList.add("signal-animate");
+
+    var _todoSignal = document.querySelector("#todoSignal");
+
+    _todoSignal.innerText = parseInt(_todoSignal.innerText) + 1;
+
+    _todoSignal.classList.add("signal-animate");
+
     setTimeout(function () {
-      todoSignal.classList.remove("signal-animate");
+      _todoSignal.classList.remove("signal-animate");
     }, 800);
   }
 });
@@ -13131,7 +13136,18 @@ doneLink.onclick = function () {
 };
 
 deleteAllBtn.addEventListener("click", function () {
-  localStorage.clear();
+  var calendarDays = _toConsumableArray(calendarContainer.children);
+
+  calendarDays.forEach(function (day) {
+    day.firstElementChild.classList.remove("calendar__item-highlighted");
+    var keyDate;
+    keyDate = day.firstElementChild.dataset.date;
+    localStorage.removeItem(keyDate);
+  });
+  tasksContainer.innerHTML = "";
+  doneContainer.innerHTML = "";
+  todoSignal.innerText = "";
+  doneSignal.innerText = "";
 });
 
 function getAllTasksFromLocalStorage(key) {
