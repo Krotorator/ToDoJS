@@ -237,6 +237,7 @@ body {
   padding-top: 10px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   position: relative;
 }
 
@@ -244,7 +245,7 @@ body {
   display: inline-block;
   width: 50px;
   height: 50px;
-  // margin-top: 10px;
+  // margin-top: 0.2vw;
   background-color: #aff06a;
   text-align: center;
   vertical-align: middle;
@@ -365,6 +366,7 @@ body {
   &__arrow {
     padding: 5px;
     svg {
+      margin-top: 5px;
       @media screen and(max-width: 360px) {
         width: 20px;
       }
@@ -385,7 +387,8 @@ body {
 // ADD TASK FORM
 
 .form {
-  min-width: 30%;
+  width: 370px;
+  max-width: 95%;
   position: absolute;
   z-index: 100;
   top: 50%;

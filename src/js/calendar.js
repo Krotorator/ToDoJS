@@ -129,8 +129,8 @@ function setVisibleAndActiveCalendarItem() {
     let allTasksArray = JSON.parse(
         localStorage.getItem(calendarDays[nowDay].firstElementChild.dataset.date)
     );
-    renderAllExistTasks(allTasksArray);
-    renderAllDoneTasks(allTasksArray);
+    // renderAllExistTasks(allTasksArray);
+    // renderAllDoneTasks(allTasksArray);
 }
 
 function HighlightNotEmptyDay() {

@@ -1,4 +1,5 @@
 import { getNowDate, renderNewTask, renderDoneTask } from "./form";
+import { HighlightNotEmptyDay } from "./calendar";
 import { deleteIsDoneFromStorage, isDoneDisapearOnCloseBtn } from "./_scripts";
 export { renderAllDoneTasks, renderAllExistTasks, thisDate };
 
@@ -63,7 +64,7 @@ toDos.addEventListener("click", function(e) {
                                 e.target.previousElementSibling.previousElementSibling.innerText;
                         }
                     });
-                    localStorage.setItem(thisDate, JSON.stringify(thisStorage));
+                    localStorage.setItem(thisDate(), JSON.stringify(thisStorage));
                 }
             }
         });
@@ -101,7 +102,17 @@ doneLink.onclick = () => {
 };
 
 deleteAllBtn.addEventListener("click", () => {
-    localStorage.clear();
+    const calendarDays = [...calendarContainer.children];
+    calendarDays.forEach(day => {
+        day.firstElementChild.classList.remove("calendar__item-highlighted");
+        let keyDate;
+        keyDate = day.firstElementChild.dataset.date;
+        localStorage.removeItem(keyDate);
+    });
+    tasksContainer.innerHTML = "";
+    doneContainer.innerHTML = "";
+    todoSignal.innerText = "";
+    doneSignal.innerText = "";
 });
 
 function getAllTasksFromLocalStorage(key) {
