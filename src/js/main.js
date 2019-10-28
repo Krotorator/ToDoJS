@@ -1,4 +1,5 @@
 import { getNowDate, renderNewTask, renderDoneTask } from "./form";
+import { deleteIsDoneFromStorage, isDoneDisapearOnCloseBtn } from "./_scripts";
 export { renderAllDoneTasks, renderAllExistTasks, thisDate };
 
 export default function renderAllExistTasks(arr) {
@@ -33,7 +34,6 @@ const toDos = document.querySelector("#toDos");
 
 toDos.addEventListener("click", function(e) {
     if (e.target.id == "taskEdit") {
-        console.log(e.target.id);
         editForm.setAttribute("style", "display:flex");
         overlay.classList.add("overlay--active");
         editInput.value = e.target.previousElementSibling.previousElementSibling.innerText;
@@ -66,6 +66,19 @@ toDos.addEventListener("click", function(e) {
                 }
             }
         });
+    } else if (e.target.id == "returnLayer") {
+        deleteIsDoneFromStorage(
+            e.target.parentElement.previousElementSibling.previousElementSibling
+                .previousElementSibling,
+            true
+        );
+        isDoneDisapearOnCloseBtn(e.target.parentElement);
+        const todoSignal = document.querySelector("#todoSignal");
+        todoSignal.innerText = parseInt(todoSignal.innerText) + 1;
+        todoSignal.classList.add("signal-animate");
+        setTimeout(() => {
+            todoSignal.classList.remove("signal-animate");
+        }, 800);
     }
 });
 editClose.addEventListener("click", function(e) {

@@ -1,6 +1,7 @@
-import { getNowDate, renderDoneTask } from "./form";
+import { getNowDate, renderDoneTask, renderNewTask } from "./form";
 import { thisDate } from "./main";
 import { HighlightNotEmptyDay } from "./calendar";
+export { deleteIsDoneFromStorage, isDoneDisapearOnCloseBtn };
 
 require("./form");
 const toDos = document.querySelector("#toDos");
@@ -81,7 +82,7 @@ function deleteTaskFromStorage(checkbox) {
     HighlightNotEmptyDay();
 }
 
-function deleteIsDoneFromStorage(label) {
+function deleteIsDoneFromStorage(label, flag = false) {
     let existTasks = JSON.parse(localStorage.getItem(thisDate()));
     console.log(existTasks);
 
@@ -89,6 +90,10 @@ function deleteIsDoneFromStorage(label) {
     for (let i = 0; i < existTasks.isDone.length; i++) {
         if (existTasks.isDone[i].idFor == label.getAttribute("for")) {
             deletedDone = existTasks.isDone.splice(i, 1);
+            if (flag) {
+                existTasks.toDo.push(deletedDone[0]);
+                renderNewTask(deletedDone[0]);
+            }
         }
     }
     localStorage.setItem(thisDate(), JSON.stringify(existTasks));

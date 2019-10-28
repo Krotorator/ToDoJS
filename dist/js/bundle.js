@@ -12503,6 +12503,12 @@ exports.SourceNode = require('./lib/source-node').SourceNode;
 },{}],44:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.deleteIsDoneFromStorage = deleteIsDoneFromStorage;
+exports.isDoneDisapearOnCloseBtn = isDoneDisapearOnCloseBtn;
+
 var _form = require("./form");
 
 var _main = require("./main");
@@ -12597,6 +12603,7 @@ function deleteTaskFromStorage(checkbox) {
 }
 
 function deleteIsDoneFromStorage(label) {
+  var flag = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var existTasks = JSON.parse(localStorage.getItem((0, _main.thisDate)()));
   console.log(existTasks);
   var deletedDone;
@@ -12604,6 +12611,11 @@ function deleteIsDoneFromStorage(label) {
   for (var i = 0; i < existTasks.isDone.length; i++) {
     if (existTasks.isDone[i].idFor == label.getAttribute("for")) {
       deletedDone = existTasks.isDone.splice(i, 1);
+
+      if (flag) {
+        existTasks.toDo.push(deletedDone[0]);
+        (0, _form.renderNewTask)(deletedDone[0]);
+      }
     }
   }
 
@@ -13015,6 +13027,8 @@ exports.thisDate = thisDate;
 
 var _form = require("./form");
 
+var _scripts = require("./_scripts");
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -13059,7 +13073,6 @@ var editInput = document.querySelector("#edit");
 var toDos = document.querySelector("#toDos");
 toDos.addEventListener("click", function (e) {
   if (e.target.id == "taskEdit") {
-    console.log(e.target.id);
     editForm.setAttribute("style", "display:flex");
     overlay.classList.add("overlay--active");
     editInput.value = e.target.previousElementSibling.previousElementSibling.innerText;
@@ -13087,6 +13100,15 @@ toDos.addEventListener("click", function (e) {
         }
       }
     });
+  } else if (e.target.id == "returnLayer") {
+    (0, _scripts.deleteIsDoneFromStorage)(e.target.parentElement.previousElementSibling.previousElementSibling.previousElementSibling, true);
+    (0, _scripts.isDoneDisapearOnCloseBtn)(e.target.parentElement);
+    var todoSignal = document.querySelector("#todoSignal");
+    todoSignal.innerText = parseInt(todoSignal.innerText) + 1;
+    todoSignal.classList.add("signal-animate");
+    setTimeout(function () {
+      todoSignal.classList.remove("signal-animate");
+    }, 800);
   }
 });
 editClose.addEventListener("click", function (e) {
