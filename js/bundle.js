@@ -12613,13 +12613,15 @@ function deleteIsDoneFromStorage(label) {
       deletedDone = existTasks.isDone.splice(i, 1);
 
       if (flag) {
-        existTasks.toDo.push(deletedDone[0]);
-        (0, _form.renderNewTask)(deletedDone[0]);
+        existTasks.toDo.push(deletedDone[0]); // renderNewTask(deletedDone[0]);
       }
     }
   }
 
+  console.log(existTasks);
+  tasksContainer.innerHTML = "";
   localStorage.setItem((0, _main.thisDate)(), JSON.stringify(existTasks));
+  (0, _main.renderAllExistTasks)(existTasks);
   (0, _calendar.HighlightNotEmptyDay)();
 }
 
@@ -12772,11 +12774,12 @@ function controlCarousel(direction) {
 
 function setVisibleAndActiveCalendarItem() {
   var nowDay = parseInt(moment().format("DD"));
+  console.log(nowDay);
 
   var calendarDays = _toConsumableArray(calendarContainer.children);
 
   for (var i = nowDay - 1; i < nowDay + 3; i++) {
-    calendarDays[nowDay].firstElementChild.classList.add("calendar__item-active");
+    calendarDays[nowDay - 1].firstElementChild.classList.add("calendar__item-active");
     calendarDays[i].setAttribute("style", "display:block");
   }
 
@@ -13072,6 +13075,7 @@ var taskEditAll = _toConsumableArray(document.querySelectorAll("#taskEdit"));
 
 var editInput = document.querySelector("#edit");
 var deleteAllBtn = document.querySelector("#deleteAll");
+var deletePopup = document.querySelector("#deletePopup");
 var toDos = document.querySelector("#toDos");
 toDos.addEventListener("click", function (e) {
   if (e.target.id == "taskEdit") {
@@ -13108,8 +13112,6 @@ toDos.addEventListener("click", function (e) {
 
     var _todoSignal = document.querySelector("#todoSignal");
 
-    _todoSignal.innerText = parseInt(_todoSignal.innerText) + 1;
-
     _todoSignal.classList.add("signal-animate");
 
     setTimeout(function () {
@@ -13136,18 +13138,29 @@ doneLink.onclick = function () {
 };
 
 deleteAllBtn.addEventListener("click", function () {
-  var calendarDays = _toConsumableArray(calendarContainer.children);
+  deletePopup.setAttribute("style", "display: flex");
+  overlay.classList.add("overlay--active");
+});
+deletePopup.addEventListener("click", function (e) {
+  if (e.target.id == "deleteConfirm") {
+    var calendarDays = _toConsumableArray(calendarContainer.children);
 
-  calendarDays.forEach(function (day) {
-    day.firstElementChild.classList.remove("calendar__item-highlighted");
-    var keyDate;
-    keyDate = day.firstElementChild.dataset.date;
-    localStorage.removeItem(keyDate);
-  });
-  tasksContainer.innerHTML = "";
-  doneContainer.innerHTML = "";
-  todoSignal.innerText = "";
-  doneSignal.innerText = "";
+    calendarDays.forEach(function (day) {
+      day.firstElementChild.classList.remove("calendar__item-highlighted");
+      var keyDate;
+      keyDate = day.firstElementChild.dataset.date;
+      localStorage.removeItem(keyDate);
+    });
+    tasksContainer.innerHTML = "";
+    doneContainer.innerHTML = "";
+    todoSignal.innerText = 0;
+    doneSignal.innerText = 0;
+    deletePopup.setAttribute("style", "display: none");
+    overlay.classList.remove("overlay--active");
+  } else if (e.target.id == "deleteCancel" || e.target.id == "deleteClose") {
+    deletePopup.setAttribute("style", "display: none");
+    overlay.classList.remove("overlay--active");
+  }
 });
 
 function getAllTasksFromLocalStorage(key) {

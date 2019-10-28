@@ -110,9 +110,27 @@
         </a>
         <label for="task">Change task here</label>
         <input class="form__task" type="text" name="edit" id="edit" />
-        <button class="button form__button" id="editTask" type="submit">Edit</button>
+        <button class="button form__button" id="editTask" type="submit">Save</button>
     </div>
     <!-- EDIT TASK FORM ENDS -->
+
+    <!-- DELETE POUP STARTS -->
+    <div class="form form__delete-popup" id="deletePopup" style="display:none">
+        <a href="#" class="button button__add form__close">
+            <span id="deleteClose"></span>
+            <svg class="button__add-icon" viewBox="0 0 357 357">
+                <g id="add">
+                    <path d="M357,204H204v153h-51V204H0v-51h153V0h51v153h153V204z" />
+                </g>
+            </svg>
+        </a>
+        <h4 for="task">Do you realy want to delete all tasks?</h4>
+        <div class="button__wrap">
+            <button class="button form__button" id="deleteConfirm" type="submit">Delete</button>
+            <button class="button form__button" id="deleteCancel" type="submit">Cancel</button>
+        </div>
+    </div>
+    <!-- DELETE POUP ENDS -->
 
     <!-- HADLEBARS TEMPLATES STARTS -->
     <script id="taskTemplate" type="text/x-handlebars-template">
