@@ -1,5 +1,5 @@
 import { getNowDate, renderNewTask, renderDoneTask } from "./form";
-export { renderAllDoneTasks, renderAllExistTasks };
+export { renderAllDoneTasks, renderAllExistTasks, thisDate };
 
 export default function renderAllExistTasks(arr) {
     if (arr && arr.toDo) {
@@ -33,6 +33,7 @@ const toDos = document.querySelector("#toDos");
 
 toDos.addEventListener("click", function(e) {
     if (e.target.id == "taskEdit") {
+        console.log(e.target.id);
         editForm.setAttribute("style", "display:flex");
         overlay.classList.add("overlay--active");
         editInput.value = e.target.previousElementSibling.previousElementSibling.innerText;
@@ -49,36 +50,27 @@ toDos.addEventListener("click", function(e) {
                 editForm.setAttribute("style", "display:none");
                 overlay.classList.remove("overlay--active");
 
-                let thisDate;
-                const calendarDays = [...calendarContainer.children];
-                calendarDays.forEach(day => {
-                    if (day.firstElementChild.classList.contains("calendar__item-active")) {
-                        thisDate = day.firstElementChild.dataset.date;
-                    }
-                });
-                const thisStorage = JSON.parse(localStorage.getItem(thisDate));
+                const thisStorage = JSON.parse(localStorage.getItem(thisDate()));
 
                 for (const taskType in thisStorage) {
                     thisStorage[taskType].forEach(sotorageItem => {
-                        console.log(sotorageItem);
-                        console.log(e.target.previousElementSibling.previousElementSibling);
-
                         if (
                             sotorageItem.unique ==
                             e.target.previousElementSibling.previousElementSibling.dataset.unique
                         ) {
                             sotorageItem.taskText =
                                 e.target.previousElementSibling.previousElementSibling.innerText;
-                            console.log(sotorageItem);
-                            console.log(thisStorage);
                         }
                     });
                     localStorage.setItem(thisDate, JSON.stringify(thisStorage));
                 }
-                // console.log(thisStorage);
             }
         });
     }
+});
+editClose.addEventListener("click", function(e) {
+    editForm.setAttribute("style", "display:none");
+    overlay.classList.remove("overlay--active");
 });
 
 toDoLink.addEventListener("click", () => {
@@ -109,5 +101,16 @@ function renderAllDoneTasks(arr) {
             renderDoneTask(arr.isDone);
         }
     }
+}
+
+function thisDate() {
+    let thisDate;
+    const calendarDays = [...calendarContainer.children];
+    calendarDays.forEach(day => {
+        if (day.firstElementChild.classList.contains("calendar__item-active")) {
+            thisDate = day.firstElementChild.dataset.date;
+        }
+    });
+    return thisDate;
 }
 // };

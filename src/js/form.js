@@ -1,4 +1,5 @@
-import { renderAllExistTasks, renderAllDoneTasks } from "./main";
+import { renderAllExistTasks } from "./main";
+import { HighlightNotEmptyDay } from "./calendar";
 
 const Handlebars = require("handlebars");
 
@@ -10,6 +11,7 @@ const taskInput = document.querySelector("#task");
 const editInput = document.querySelector("#edit");
 const addTask = document.querySelector("#addTask");
 const editTask = document.querySelector("#editTask");
+const editClose = document.querySelector("#editClose");
 const tasksList = document.querySelector("#todos__items");
 const tasksContainer = document.querySelector("#tasksContainer");
 const doneContainer = document.querySelector("#doneContainer");
@@ -82,6 +84,7 @@ addTask.addEventListener("click", function() {
             taskInput.classList.remove("input-alert");
         }, 1500);
     }
+    HighlightNotEmptyDay();
 });
 
 formCloseButton.addEventListener("click", function() {
@@ -140,8 +143,6 @@ function renderDoneTask(obj) {
     doneTask.dataset.done = "true";
     doneTask.innerHTML = html;
     doneContainer.append(doneTask);
-    // const doneCounter = document.querySelector("#doneCounter");
-    // doneCounter.innerText = parseInt(doneCounter.innerText) + 1;
     doneSignal.innerText = parseInt(doneSignal.innerText) + 1;
 }
 

@@ -1,4 +1,5 @@
 import { renderAllExistTasks, renderAllDoneTasks } from "./main";
+export { HighlightNotEmptyDay };
 
 const Handlebars = require("handlebars");
 const moment = require("moment");
@@ -39,7 +40,7 @@ if (calendarContainer.children) {
                     doneSignal.innerText = 0;
                 } else {
                     doneSignal.innerText = allTasksArray.isDone.length;
-                    doneSignal.innerText = allTasksArray.toDo.length;
+                    todoSignal.innerText = allTasksArray.toDo.length;
                 }
             }
         });
@@ -136,7 +137,15 @@ function HighlightNotEmptyDay() {
     const calendarDays = [...calendarContainer.children];
     calendarDays.forEach(day => {
         if (localStorage.getItem(day.firstElementChild.dataset.date)) {
-            day.firstElementChild.classList.add("calendar__item-highlighted");
+            if (
+                JSON.parse(localStorage.getItem(day.firstElementChild.dataset.date)).isDone.length >
+                    0 ||
+                JSON.parse(localStorage.getItem(day.firstElementChild.dataset.date)).toDo.length > 0
+            ) {
+                day.firstElementChild.classList.add("calendar__item-highlighted");
+            } else {
+                day.firstElementChild.classList.remove("calendar__item-highlighted");
+            }
         }
     });
 }
