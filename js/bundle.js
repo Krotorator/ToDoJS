@@ -12778,7 +12778,7 @@ function setVisibleAndActiveCalendarItem() {
 
   var calendarDays = _toConsumableArray(calendarContainer.children);
 
-  for (var i = nowDay - 1; i < nowDay + 3; i++) {
+  for (var i = nowDay - 4; i < nowDay; i++) {
     calendarDays[nowDay - 1].firstElementChild.classList.add("calendar__item-active");
     calendarDays[i].setAttribute("style", "display:block");
   }
@@ -13128,6 +13128,8 @@ toDoLink.addEventListener("click", function () {
   doneLink.classList.remove("link--active");
   toDoBody.classList.remove("hide");
   toDoLink.classList.add("link--active");
+  plus.removeAttribute("disabled", "disabled");
+  plus.classList.remove("button__add--big-disabled");
 });
 
 doneLink.onclick = function () {
@@ -13135,6 +13137,8 @@ doneLink.onclick = function () {
   toDoLink.classList.remove("link--active");
   doneBody.classList.remove("hide");
   doneLink.classList.add("link--active");
+  plus.setAttribute("disabled", "disabled");
+  plus.classList.add("button__add--big-disabled");
 };
 
 deleteAllBtn.addEventListener("click", function () {
@@ -13146,11 +13150,12 @@ deletePopup.addEventListener("click", function (e) {
     var calendarDays = _toConsumableArray(calendarContainer.children);
 
     calendarDays.forEach(function (day) {
-      day.firstElementChild.classList.remove("calendar__item-highlighted");
-      var keyDate;
-      keyDate = day.firstElementChild.dataset.date;
-      localStorage.removeItem(keyDate);
-    });
+      if (day.firstElementChild.dataset.date == thisDate()) {
+        day.firstElementChild.classList.remove("calendar__item-highlighted");
+        localStorage.removeItem(thisDate());
+      }
+    }); // localStorage.removeItem(thisDate());
+
     tasksContainer.innerHTML = "";
     doneContainer.innerHTML = "";
     todoSignal.innerText = 0;
