@@ -93,12 +93,16 @@ toDoLink.addEventListener("click", () => {
     doneLink.classList.remove("link--active");
     toDoBody.classList.remove("hide");
     toDoLink.classList.add("link--active");
+    plus.removeAttribute("disabled", "disabled");
+    plus.classList.remove("button__add--big-disabled");
 });
 doneLink.onclick = () => {
     toDoBody.classList.add("hide");
     toDoLink.classList.remove("link--active");
     doneBody.classList.remove("hide");
     doneLink.classList.add("link--active");
+    plus.setAttribute("disabled", "disabled");
+    plus.classList.add("button__add--big-disabled");
 };
 
 deleteAllBtn.addEventListener("click", () => {
@@ -110,11 +114,13 @@ deletePopup.addEventListener("click", e => {
     if (e.target.id == "deleteConfirm") {
         const calendarDays = [...calendarContainer.children];
         calendarDays.forEach(day => {
-            day.firstElementChild.classList.remove("calendar__item-highlighted");
-            let keyDate;
-            keyDate = day.firstElementChild.dataset.date;
-            localStorage.removeItem(keyDate);
+            if (day.firstElementChild.dataset.date == thisDate()) {
+                day.firstElementChild.classList.remove("calendar__item-highlighted");
+                localStorage.removeItem(thisDate());
+            }
         });
+
+        // localStorage.removeItem(thisDate());
         tasksContainer.innerHTML = "";
         doneContainer.innerHTML = "";
         todoSignal.innerText = 0;

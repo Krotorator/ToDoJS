@@ -124,7 +124,7 @@ function setVisibleAndActiveCalendarItem() {
     console.log(nowDay);
 
     const calendarDays = [...calendarContainer.children];
-    for (let i = nowDay - 1; i < nowDay + 3; i++) {
+    for (let i = nowDay - 4; i < nowDay; i++) {
         calendarDays[nowDay - 1].firstElementChild.classList.add("calendar__item-active");
         calendarDays[i].setAttribute("style", "display:block");
     }
