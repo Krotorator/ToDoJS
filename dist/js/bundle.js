@@ -12778,9 +12778,9 @@ function setVisibleAndActiveCalendarItem() {
 
   var calendarDays = _toConsumableArray(calendarContainer.children);
 
-  for (var i = nowDay - 4; i < nowDay; i++) {
+  for (var i = nowDay; i < nowDay + 4; i++) {
     calendarDays[nowDay - 1].firstElementChild.classList.add("calendar__item-active");
-    calendarDays[i].setAttribute("style", "display:block");
+    calendarDays[i - 1].setAttribute("style", "display:block");
   }
 
   var allTasksArray = JSON.parse(localStorage.getItem(calendarDays[nowDay].firstElementChild.dataset.date)); // renderAllExistTasks(allTasksArray);

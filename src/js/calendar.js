@@ -121,12 +121,11 @@ function controlCarousel(direction) {
 
 function setVisibleAndActiveCalendarItem() {
     let nowDay = parseInt(moment().format("DD"));
-    console.log(nowDay);
 
     const calendarDays = [...calendarContainer.children];
-    for (let i = nowDay - 4; i < nowDay; i++) {
+    for (let i = nowDay; i < nowDay + 4; i++) {
         calendarDays[nowDay - 1].firstElementChild.classList.add("calendar__item-active");
-        calendarDays[i].setAttribute("style", "display:block");
+        calendarDays[i - 1].setAttribute("style", "display:block");
     }
     let allTasksArray = JSON.parse(
         localStorage.getItem(calendarDays[nowDay].firstElementChild.dataset.date)
